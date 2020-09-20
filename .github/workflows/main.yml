@@ -45,9 +45,9 @@ jobs:
 
       - name: Install Required Packages
         run: |
-          apt update
-          apt upgrade -y
-          apt install -y build-essential git xorg
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y build-essential git xorg
 
       - name: Generate Build Files
         run: ./tools/linux/gn gen out
