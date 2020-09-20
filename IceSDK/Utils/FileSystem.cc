@@ -199,7 +199,7 @@ void FileSystem::WriteBinaryFile(const std::string &pPath, std::vector<uint8_t> 
 
 	file.unsetf(std::ios::skipws);
 
-	file.write(pData.data(), pData.size());
+	file.write((const char *)pData.data(), pData.size());
 	file.close();
 #endif
 
