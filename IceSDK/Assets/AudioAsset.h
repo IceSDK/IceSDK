@@ -15,7 +15,10 @@ namespace IceSDK
 
 			Memory::Ptr<Audio::Sound> LoadAudio() const;
 
-			static eAssetType GetAssetType();
+			constexpr static eAssetType GetAssetType()
+			{
+				return eAssetType::Audio;
+			}
 
 			std::vector<uint8_t> ToByteArray() const;
 			static AudioAsset From(std::string pName, std::vector<uint8_t> pData);

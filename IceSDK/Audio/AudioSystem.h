@@ -1,11 +1,10 @@
 #pragma once
 
-#include <string>
-
 #include "Audio/Sound.h"
 #include "Audio/AudioEnums.h"
 #include "Utils/Memory.h"
 
+#include <string>
 #include <vector>
 
 #ifdef ICESDK_FMOD

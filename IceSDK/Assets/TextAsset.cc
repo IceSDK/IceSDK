@@ -14,11 +14,6 @@ std::string TextAsset::ToString() const
 	return this->_data;
 }
 
-eAssetType TextAsset::GetAssetType()
-{
-	return eAssetType::Text;
-}
-
 std::vector<uint8_t> TextAsset::ToByteArray()
 {
 	return std::vector<uint8_t>(this->_data.begin(), this->_data.end());

@@ -16,11 +16,6 @@ Memory::Ptr<Audio::Sound> AudioAsset::LoadAudio() const
 	return GetAudioSystem()->Load(this->_data);
 }
 
-eAssetType AudioAsset::GetAssetType()
-{
-	return eAssetType::Audio;
-}
-
 std::vector<uint8_t> AudioAsset::ToByteArray() const
 {
 	return this->_data;

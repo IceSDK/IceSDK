@@ -18,5 +18,6 @@ namespace IceSDK
 		bool HasExtension(const std::string &pPath, const std::string &pExt);
 		std::string GetFileName(const std::string &pPath);
 		void Touch(const std::string &pPath);
+		void Delete(const std::string &pPath);
 	} // namespace FileSystem
 } // namespace IceSDK

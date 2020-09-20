@@ -110,6 +110,12 @@ Memory::Ptr<AssetFile> AssetFile::Load(const std::string &pPath)
 	ICESDK_PROFILE_FUNCTION();
 	auto data = FileSystem::ReadBinaryFile(pPath);
 
+	if (data.empty())
+	{
+		ICESDK_CORE_ERROR("Failed to load AssetFile: {}!", pPath);
+		return nullptr;
+	}
+
 	ICESDK_CORE_INFO("{}: {}", pPath, data.size());
 
 	return AssetFile::Load(data);

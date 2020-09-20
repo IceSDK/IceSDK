@@ -17,7 +17,10 @@ namespace IceSDK
 		public:
 			// Memory::Ptr<Audio::Audio> LoadAudio() const;
 
-			static eAssetType GetAssetType();
+			constexpr static eAssetType GetAssetType()
+			{
+				return eAssetType::Shader;
+			}
 
 			std::vector<uint8_t> ToByteArray() const;
 			static ShaderAsset From(std::string pName, std::vector<uint8_t> pData);

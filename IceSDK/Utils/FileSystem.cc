@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "Utils/FileSystem.h"
+#include "Utils/Logger.h"
 
 #include <fstream>
 #include <iterator>
@@ -156,8 +157,11 @@ std::string FileSystem::ResolveFullPath(const std::string &pPath)
 std::vector<uint8_t> FileSystem::ReadBinaryFile(const std::string &pPath)
 {
 	std::ifstream file(pPath, std::ios::binary | std::ios::in);
-	if (file.fail())
+	if (!file && file.fail())
+	{
+		ICESDK_CORE_ERROR("Failed to open {}", pPath);
 		return {};
+	}
 
 	file.unsetf(std::ios::skipws); // Read the file properly!
 
@@ -180,14 +184,24 @@ std::vector<uint8_t> FileSystem::ReadBinaryFile(const std::string &pPath)
 
 void FileSystem::WriteBinaryFile(const std::string &pPath, std::vector<uint8_t> pData)
 {
+#if defined(ICESDK_LINUX) || defined(ICESDK_ANDROID)
+	auto fp = open(pPath.c_str(), O_WRONLY | O_CREAT, umask(0755));
+	if (fp < 0)
+		ICESDK_CORE_ERROR("Failed to open {}", pPath);
+
+	write(fp, pData.data(), pData.size());
+
+	close(fp);
+#else
 	std::ofstream file(pPath, std::ios::binary | std::ios::out);
-	if (!file)
-		std::cout << "Failed to open " << pPath << std::endl;
+	if (!file && file.fail())
+		ICESDK_CORE_ERROR("Failed to open {}", pPath);
 
 	file.unsetf(std::ios::skipws);
 
-	file.write(reinterpret_cast<const char *>(&pData[0]), pData.size());
+	file.write(pData.data(), pData.size());
 	file.close();
+#endif
 
 #if defined(ICESDK_LINUX) || defined(ICESDK_EMSCRIPTEN) || defined(ICESDK_ANDROID)
 	chmod(pPath.c_str(), umask(0755)); // set the correct permissions cause it's wrong
@@ -208,9 +222,7 @@ void FileSystem::MkDir(const std::string &pPath)
 	CreateDirectory(pPath.c_str(), NULL);
 #elif defined(ICESDK_LINUX) || defined(ICESDK_EMSCRIPTEN) || defined(ICESDK_ANDROID)
 	if (mkdir(pPath.c_str(), umask(0755)))
-	{
-		std::cout << "Failed to create Directory! " << pPath << std::endl;
-	}
+		ICESDK_CORE_ERROR("Failed to create Directory! {}", pPath);
 
 	chmod(pPath.c_str(), umask(0755)); // set the correct permissions cause it's wrong for some reason
 #else
@@ -232,4 +244,9 @@ std::string FileSystem::GetFileName(const std::string &pPath)
 void FileSystem::Touch(const std::string &pPath)
 {
 	WriteBinaryFile(pPath, {});
+}
+
+void FileSystem::Delete(const std::string &pPath)
+{
+	remove(pPath.c_str());
 }

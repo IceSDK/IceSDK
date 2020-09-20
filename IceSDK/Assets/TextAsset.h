@@ -16,7 +16,11 @@ namespace IceSDK
 
 			std::string ToString() const;
 
-			static eAssetType GetAssetType();
+			constexpr static eAssetType GetAssetType()
+			{
+				return eAssetType::Text;
+			}
+
 			std::vector<uint8_t> ToByteArray();
 			static TextAsset From(std::string pName, std::vector<uint8_t> pData);
 

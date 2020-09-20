@@ -26,7 +26,10 @@ void AssetManager::Init()
 
 		auto assetFile = AssetFile::Load(assetFilePath);
 		if (assetFile == nullptr)
-			continue;
+		{
+			ICESDK_CORE_CRITICAL("Failed to initialize AssetManager");
+			break;
+		}
 
 		this->_assets.push_back(assetFile);
 	}

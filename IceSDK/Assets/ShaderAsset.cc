@@ -6,11 +6,6 @@
 using namespace IceSDK;
 using namespace IceSDK::Assets;
 
-eAssetType ShaderAsset::GetAssetType()
-{
-	return eAssetType::Shader;
-}
-
 /*
 uint8_t (Amount of Shaders)
 uint16_t[] (Platform | Type)

@@ -12,13 +12,17 @@ namespace IceSDK
 		class Texture2DAsset
 		{
 		public:
-			explicit Texture2DAsset(const std::string& pName, const std::vector<uint8_t>& pData);
+			explicit Texture2DAsset(const std::string &pName, const std::vector<uint8_t> &pData);
 
 			Memory::Ptr<Graphics::Texture2D> LoadTexture() const;
 
-			static eAssetType GetAssetType();
+			constexpr static eAssetType GetAssetType()
+			{
+				return eAssetType::Texture;
+			}
+
 			std::vector<uint8_t> ToByteArray() const;
-			static Texture2DAsset From(const std::string& pName, const std::vector<uint8_t>& pData);
+			static Texture2DAsset From(const std::string &pName, const std::vector<uint8_t> &pData);
 
 		private:
 			std::string _name;
