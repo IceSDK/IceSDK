@@ -187,7 +187,7 @@ void FileSystem::WriteBinaryFile(const std::string &pPath, std::vector<uint8_t> 
 	file.unsetf(std::ios::skipws);
 
 	file.write(reinterpret_cast<const char *>(&pData[0]), pData.size());
-	file.flush();
+	file.close();
 
 #if defined(ICESDK_LINUX) || defined(ICESDK_EMSCRIPTEN) || defined(ICESDK_ANDROID)
 	chmod(pPath.c_str(), umask(0755)); // set the correct permissions cause it's wrong

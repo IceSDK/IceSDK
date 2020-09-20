@@ -114,7 +114,7 @@ unity_lib("IceSDK") {
     }
 
     if (is_emscripten) {
-        defines += [ "ICESDK_EMSCRIPTEN", "__EMSCRIPTEN__" ]
+        defines += [ "ICESDK_EMSCRIPTEN", "__EMSCRIPTEN__", "ICESDK_FMOD" ]
         use_sdl2 = true
     }
 
@@ -145,6 +145,10 @@ unity_lib("IceSDK") {
         lib_prefix = "lib"
     }
 
+    if (is_emscripten) {
+        lib_ext = "a"
+    }
+
     libs = [ "//third-party/fmod/lib/$target_os/$target_cpu/"+lib_prefix+"fmod.$lib_ext" ]
 
     deps = [
@@ -155,7 +159,7 @@ unity_lib("IceSDK") {
         "//third-party/freetype"
     ]
 
-    if (is_emscripten || is_android) { # TODO: figure out how to link fmod with emscripten
+    if (is_android) { # TODO: figure out how to link fmod with android
         libs = [  ]
     } else {
         deps += [ ":fmod" ]  # Copy fmod library to our output dir 
@@ -193,4 +197,8 @@ if (is_linux) {
         sources = [ "//third-party/fmod/lib/$target_os/$target_cpu/libfmod.so.12.4" ]
         outputs = [ "$root_out_dir/libfmod.so.12" ]
     }
+}
+
+if (is_emscripten) {
+    static_library("fmod") { }
 }

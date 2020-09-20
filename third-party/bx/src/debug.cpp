@@ -44,7 +44,8 @@ namespace bx
 		// NativeClient: NaCl module load failed: Validation failure. File violates Native Client safety rules.
 		__asm__("int $3");
 #elif BX_PLATFORM_EMSCRIPTEN
-		emscripten_log(EM_LOG_CONSOLE | EM_LOG_ERROR | EM_LOG_C_STACK | EM_LOG_JS_STACK | EM_LOG_DEMANGLE, "debugBreak!");
+		// TODO
+		// emscripten_log(EM_LOG_CONSOLE | EM_LOG_ERROR | EM_LOG_C_STACK | EM_LOG_JS_STACK | EM_LOG_DEMANGLE, "debugBreak!");
 		// Doing emscripten_debugger() disables asm.js validation due to an emscripten bug
 		//emscripten_debugger();
 		EM_ASM({ debugger; });
@@ -72,7 +73,8 @@ namespace bx
 		NSLog(__CFStringMakeConstantString("%s"), _out);
 #endif // defined(__OBJC__)
 #elif BX_PLATFORM_EMSCRIPTEN
-		emscripten_log(EM_LOG_CONSOLE, "%s", _out);
+		// TODO
+		// emscripten_log(EM_LOG_CONSOLE, "%s", _out);
 #else
 		fputs(_out, stdout);
 		fflush(stdout);

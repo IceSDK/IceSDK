@@ -195,6 +195,8 @@ template("IceSDK_Project") {
                     "-sFILESYSTEM=1",
                     "-sFORCE_FILESYSTEM=1",
                     "-sLZ4=1",
+
+                    "-sEXTRA_EXPORTED_RUNTIME_METHODS=[\"cwrap\"]",
                 ]
 
                 emscripten_ldflags = [
