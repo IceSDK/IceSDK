@@ -15,7 +15,7 @@ namespace IceSDK
 	{
 	public:
 		explicit GameBase();
-		virtual ~GameBase() = default;
+		~GameBase();
 
 		void Run();
 

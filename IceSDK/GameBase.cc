@@ -37,6 +37,15 @@ GameBase::GameBase()
 	ICESDK_PROFILE_END_SESSION();
 }
 
+GameBase::~GameBase()
+{
+	this->_active_scene = nullptr;
+	this->_asset_manager = nullptr;
+	this->_audio_system = nullptr;
+	this->_shader_manager = nullptr;
+	this->_window = nullptr;
+}
+
 void GameBase::Run()
 {
 	ICESDK_PROFILE_BEGIN_SESSION("Runtime", "Benchmark-Runtime.json");
@@ -231,7 +240,6 @@ void GameBase::InternalShutdown()
 	imguiDestroy();
 
 	game->Shutdown();
-	bgfx::shutdown();
 }
 
 static Memory::Ptr<bx::AllocatorI> g_Allocator = std::make_shared<bx::DefaultAllocator>();
