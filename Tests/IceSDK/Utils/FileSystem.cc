@@ -2,9 +2,11 @@
 #include "gmock/gmock.h"
 
 #include "Utils/FileSystem.h"
+#include "Utils/Logger.h"
 
 TEST(FileSystem, MkDir)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::MkDir("./TestDir");
 
     ASSERT_TRUE(IceSDK::FileSystem::Exists("./TestDir"));
@@ -13,6 +15,7 @@ TEST(FileSystem, MkDir)
 
 TEST(FileSystem, Exists)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::MkDir("./TestDir");
 
     ASSERT_TRUE(IceSDK::FileSystem::Exists("./TestDir"));
@@ -21,11 +24,13 @@ TEST(FileSystem, Exists)
 
 TEST(FileSystem, JoinPath)
 {
+    IceSDK::Log::Init();
     ASSERT_EQ("./test/dir", IceSDK::FileSystem::JoinPath("./test/", "dir"));
 }
 
 TEST(FileSystem, IsDirectory)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::MkDir("./TestDir");
     IceSDK::FileSystem::Touch("./TestFile");
 
@@ -36,6 +41,7 @@ TEST(FileSystem, IsDirectory)
 
 TEST(FileSystem, ReadDirectory)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::MkDir("./TestDir");
     IceSDK::FileSystem::MkDir("./TestDir/Dir");
     IceSDK::FileSystem::Touch("./TestDir/File");
@@ -47,11 +53,13 @@ TEST(FileSystem, ReadDirectory)
 
 TEST(FileSystem, ResolveFullPath)
 {
+    IceSDK::Log::Init();
     ASSERT_NE(IceSDK::FileSystem::ResolveFullPath("."), ""); // there is no real way we could test it, other than it's not being empty
 }
 
 TEST(FileSystem, ReadBinaryFile)
 {
+    IceSDK::Log::Init();
     std::vector<uint8_t> data = {'M', 'e', 'm', 'p', 'l', 'e', 'r', 17};
 
     IceSDK::FileSystem::WriteBinaryFile("./TestFile", data);
@@ -61,6 +69,7 @@ TEST(FileSystem, ReadBinaryFile)
 
 TEST(FileSystem, WriteBinaryFile)
 {
+    IceSDK::Log::Init();
     std::vector<uint8_t> data = {'M', 'e', 'm', 'p', 'l', 'e', 'r', 17};
 
     IceSDK::FileSystem::WriteBinaryFile("./TestFile", data);
@@ -70,6 +79,7 @@ TEST(FileSystem, WriteBinaryFile)
 
 TEST(FileSystem, HasExtension)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::Touch("./TestFile.test");
 
     ASSERT_TRUE(IceSDK::FileSystem::HasExtension("./TestFile.test", ".test"));
@@ -78,6 +88,7 @@ TEST(FileSystem, HasExtension)
 
 TEST(FileSystem, GetFileName)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::Touch("./TestFile");
 
     ASSERT_EQ(IceSDK::FileSystem::GetFileName("TestFile"), "TestFile");
@@ -87,6 +98,7 @@ TEST(FileSystem, GetFileName)
 
 TEST(FileSystem, Touch)
 {
+    IceSDK::Log::Init();
     IceSDK::FileSystem::Touch("./TestFile");
 
     ASSERT_TRUE(IceSDK::FileSystem::Exists("./TestFile"));
