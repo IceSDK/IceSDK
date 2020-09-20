@@ -1,0 +1,69 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  BareBones_PC_Win32:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Build Files
+        run: .\tools\win\gn.exe gen out
+
+      - name: Build BareBones
+        run: .\tools\win\ninja.exe -C out BareBones
+      
+      - name: Copy Artifacts
+        run: |
+          mkdir artifacts
+          robocopy out artifacts *.dll *.exe *.pdb
+          robocopy out\Assets artifacts\Assets *.pxl
+          exit 0
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: BareBones
+          path: artifacts/
+
+  BareBones_PC_Linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Required Packages
+        run: |
+          apt update
+          apt upgrade -y
+          apt install -y build-essential git xorg
+
+      - name: Generate Build Files
+        run: ./tools/linux/gn gen out
+
+      - name: Build BareBones
+        run: ./tools/linux/ninja -C out BareBones
+      
+      - name: Copy Artifacts
+        run: |
+          mkdir artifacts
+          cp out/*.so artifacts/
+          cp out/BareBones artifacts/
+          cp out/Assets/*.pxl artifacts/
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: BareBones
+          path: artifacts/
