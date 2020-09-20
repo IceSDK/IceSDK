@@ -1,6 +1,10 @@
 import("//IceSDK/IceSDK.gni")
 
 IceSDK_Project("BareBones") {
+    assets = [
+        "Assets/Mempler.png"
+    ]
+    
     sources = [
         "main.cc"
     ]

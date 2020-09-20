@@ -1,0 +1,56 @@
+name: Linux Emscripten
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  BareBones:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Required Toolchain
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip python-is-python3 libglfw3
+
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git
+          
+          ./emsdk/emsdk install latest
+          ./emsdk/emsdk activate latest
+
+      - name: Generate Build Files
+        run: |
+          source ./emsdk/emsdk_env.sh
+
+          mkdir ./out/
+          cp ./.github/emscripten/args.gn ./out/args.gn
+
+          chmod +x ./tools/linux/*
+
+          ./tools/linux/gn gen out
+
+      - name: Build BareBones
+        run: |
+          source ./emsdk/emsdk_env.sh
+
+          ./tools/linux/ninja -C out BareBones
+
+      - name: Copy Artifacts
+        run: |
+          mkdir artifacts
+
+          cp ./out/*.wasm artifacts/    || \
+          cp ./out/*.html artifacts/    || \
+          cp ./out/*.js artifacts/      || \
+          cp ./out/*.fs.data artifacts/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: BareBones
+          path: artifacts/

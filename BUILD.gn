@@ -3,6 +3,7 @@ group("root") {
         "//IceSDK",
 
         "//Examples",
-        "//Tests"
+        "//Tests",
+        "//tools/sources:Tools",
     ]
 }

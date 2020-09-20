@@ -43,6 +43,11 @@
 #include "SDL_syswm.h"
 #endif
 
+// This is stupid... don't name thins "None" as a #define
+#ifdef ICESDK_LINUX
+#undef None
+#endif
+
 #if ICESDK_ANDROID
 #include "GLES/egl.h"
 #endif

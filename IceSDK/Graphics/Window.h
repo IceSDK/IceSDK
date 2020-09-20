@@ -24,7 +24,7 @@ namespace IceSDK
 	{
 		enum eGameWindowFlags
 		{
-			None,
+			None = 0,
 			Fullscreen = 1 << 1
 		};
 

@@ -1,0 +1,69 @@
+name: Linux Android
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# TODO: compile to android
+jobs:
+  BareBones:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Required Packages
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential git libglfw3-dev libfreetype-dev
+
+      - name: Generate Build Files
+        run: |
+          chmod +x ./tools/linux/gn
+          ./tools/linux/gn gen out
+
+      - name: Build BareBones
+        run: |
+          chmod +x ./tools/linux/ninja
+          ./tools/linux/ninja -C out BareBones
+      
+      - name: Copy Artifacts
+        run: |
+          mkdir artifacts
+          cp out/*.so.* artifacts/ || \
+          cp out/BareBones artifacts/ || \
+          cp -R out/Assets/ artifacts/
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: BareBones
+          path: artifacts/
+  
+  TestIceSDK:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Required Packages
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential git libglfw3-dev libfreetype-dev
+
+      - name: Generate Build Files
+        run: |
+          chmod +x ./tools/linux/gn
+          ./tools/linux/gn gen out
+
+      - name: Build TestIceSDK
+        run: |
+          chmod +x ./tools/linux/ninja
+          ./tools/linux/ninja -C out TestIceSDK
+      
+      - name: Execute Tests
+        run: |
+          cd out
+          ./TestIceSDK

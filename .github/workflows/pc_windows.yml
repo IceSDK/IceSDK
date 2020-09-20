@@ -1,0 +1,50 @@
+name: PC Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  BareBones:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Build Files
+        run: .\tools\win\gn.exe gen out
+
+      - name: Build BareBones
+        run: .\tools\win\ninja.exe -C out BareBones
+      
+      - name: Copy Artifacts
+        run: |
+          mkdir artifacts
+          robocopy out artifacts *.dll *.exe *.pdb
+          robocopy out\Assets artifacts\Assets *.pxl
+          exit 0
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: BareBones
+          path: artifacts/
+  
+  TestIceSDK:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Build Files
+        run: .\tools\win\gn.exe gen out
+
+      - name: Build TestIceSDK
+        run: .\tools\win\ninja.exe -C out TestIceSDK
+      
+      - name: Execute Tests
+        run: |
+          cd out
+          .\TestIceSDK

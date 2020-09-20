@@ -1,4 +1,21 @@
+if (is_clang) {
+    import("//build/toolchain/clang.gni")
+}
+
 template("IceSDK_Project") {
+    if (!defined(invoker.assets)) {
+        invoker.assets = [  ]
+    }
+
+    action("Assets_$target_name") {
+        script = "//tools/compile_assets.py"
+        args = [ host_os, rebase_path(root_build_dir), rebase_path(".", root_build_dir) ]
+
+        inputs = invoker.assets
+
+        outputs = [ "$target_out_dir/Assets/0.pxl" ]
+    }
+
     if (is_android) {
         shared_library(target_name) {
             forward_variables_from(invoker, "*")
@@ -43,7 +60,7 @@ template("IceSDK_Project") {
             # BGFX
             include_dirs += [ "//third-party/bgfx/include", "//third-party/bimg/include", "//third-party/bx/include", "//third-party/glfw/include" ]
 
-            exec_script("//tools/compile_assets.py", [ host_os, rebase_path(".", root_build_dir) ])
+            exec_script("//tools/compile_assets.py", [ host_os, rebase_path(root_build_dir), rebase_path(".", root_build_dir) ])
 
             include_dirs += [
                 "//third-party/fmod/inc",
@@ -60,6 +77,32 @@ template("IceSDK_Project") {
             libs += [ "stdc++" ]
         }
     } else {
+        orig_target_name = target_name
+
+        if (is_emscripten) {
+            action("GenHTML_$target_name") {
+                script = "//tools/generate_html.py"
+                args = [ orig_target_name ]
+
+                outputs = [ "$target_out_dir/$orig_target_name.html" ]
+
+                deps = [
+                    ":CompileFileSystem_$orig_target_name"
+                ]
+            }
+
+            action("CompileFileSystem_$target_name") {
+                script = "$clang_base_path/emscripten/tools/file_packager.py"
+                args = [ "$orig_target_name.fs.data", "--lz4", "--preload", rebase_path("//" + root_build_dir + "/Assets"), "--js-output=$orig_target_name.fs.js" ]
+            
+                outputs = [ "$target_out_dir/$orig_target_name.fs.data" ]
+
+                deps = [
+                    ":Assets_$orig_target_name"
+                ]
+            }
+        }
+
         executable(target_name) {
             forward_variables_from(invoker, "*")
 
@@ -115,8 +158,6 @@ template("IceSDK_Project") {
                 include_dirs += [ "//third-party/bx/include/compat/osx" ]
             }
 
-            exec_script("//tools/compile_assets.py", [ host_os, rebase_path(".", root_build_dir) ])
-
             include_dirs += [
                 "//third-party/fmod/inc",
                 "//third-party/bgfx/include", "//third-party/bimg/include", "//third-party/bx/include",
@@ -127,7 +168,12 @@ template("IceSDK_Project") {
 
             deps += [
                 "//IceSDK:IceSDK",
+                ":Assets_$orig_target_name"           
             ]
+
+            if (is_emscripten) {
+                deps += [ ":CompileFileSystem_$orig_target_name" ]
+            }
 
             if (is_emscripten) {
                 emscripten_flags = [
@@ -162,18 +208,13 @@ template("IceSDK_Project") {
                 ldflags += emscripten_ldflags
 
                 cflags_cc += emscripten_flags
-
-                # TODO: Finish
-                exec_script("C:\\Users\\Mempler\\emsdk\\upstream/emscripten/tools/file_packager.py", [ "$target_name.fs.data", "--lz4", "--preload", "Assets/", "--js-output=$target_name.fs.js" ])
-            
-                exec_script("//tools/generate_html.py", [ target_name ])
             }
         }
     }
 }
 
 template ("IceSDK_Test") {
-    IceSDK_Project("Test-" + target_name) {
+    IceSDK_Project("Test" + target_name) {
         forward_variables_from(invoker, "*")
         
         sources += [ "//Tests/Test.cc" ]

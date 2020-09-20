@@ -59,12 +59,12 @@ if (clang_version == 0 && is_clang && !is_win) {
     assert(false, "GCC isn't supported on this platform")
   }
 
-  clang_version = exec_script("posix/toolchain.py",
-                              [
-                                "get_clang_version",
-                                _exe,
-                              ],
-                              "trim value")
+  #clang_version = exec_script("posix/toolchain.py",
+  #                            [
+  #                              "get_clang_version",
+  #                              _exe,
+  #                            ],
+  #                            "trim value")
 } else if (clang_version == 0 && is_clang) {
   clang_version = win_clang_version
 }

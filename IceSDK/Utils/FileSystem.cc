@@ -9,6 +9,7 @@
 #ifdef ICESDK_WIN32
 #include <Windows.h>
 #elif defined(ICESDK_LINUX) || defined(ICESDK_ANDROID)
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
@@ -180,9 +181,17 @@ std::vector<uint8_t> FileSystem::ReadBinaryFile(const std::string &pPath)
 void FileSystem::WriteBinaryFile(const std::string &pPath, std::vector<uint8_t> pData)
 {
 	std::ofstream file(pPath, std::ios::binary | std::ios::out);
+	if (!file)
+		std::cout << "Failed to open " << pPath << std::endl;
+
 	file.unsetf(std::ios::skipws);
 
 	file.write(reinterpret_cast<const char *>(&pData[0]), pData.size());
+	file.flush();
+
+#if defined(ICESDK_LINUX) || defined(ICESDK_EMSCRIPTEN) || defined(ICESDK_ANDROID)
+	chmod(pPath.c_str(), umask(0755)); // set the correct permissions cause it's wrong
+#endif
 }
 
 bool FileSystem::HasExtension(const std::string &pPath, const std::string &pExt)
@@ -198,10 +207,12 @@ void FileSystem::MkDir(const std::string &pPath)
 #ifdef ICESDK_WIN32
 	CreateDirectory(pPath.c_str(), NULL);
 #elif defined(ICESDK_LINUX) || defined(ICESDK_EMSCRIPTEN) || defined(ICESDK_ANDROID)
-	if (mkdir(pPath.c_str(), 0777))
+	if (mkdir(pPath.c_str(), umask(0755)))
 	{
 		std::cout << "Failed to create Directory! " << pPath << std::endl;
 	}
+
+	chmod(pPath.c_str(), umask(0755)); // set the correct permissions cause it's wrong for some reason
 #else
 #error "Platform not implemented!"
 #endif
