@@ -1,0 +1,77 @@
+version: 2.1
+
+executors:
+  linux:
+    docker:
+      - image: ubuntu:20.04
+
+orbs:
+  win: circleci/windows@2.2.0
+
+jobs:
+    BareBones_Win32:
+        executor: win/default
+        steps:
+        - checkout
+
+        - run:
+            name: Generate Build Files
+            command: |
+                .\tools\win\gn.exe gen out
+        
+        - run:
+            name: Build BareBones
+            command: |
+                .\tools\win\ninja.exe -C out BareBones
+
+        - run:
+            name: Copying Artifacts
+            command: |
+                mkdir artifacts
+                robocopy out artifacts *.dll *.exe *.pdb
+                robocopy out\Assets artifacts\Assets *.pxl
+                exit 0
+        
+        - store_artifacts:
+            path: artifacts
+
+    BareBones_Linux:
+        executor: linux
+        steps:
+        - run:
+            name: Setup
+            command: |
+                apt update
+                apt upgrade -y
+                apt install -y build-essential git
+
+        - checkout
+
+        - run:
+            name: Generate Build Files
+            command: |
+                ./tools/linux/gn gen out
+        
+        - run:
+            name: Build BareBones
+            command: |
+                ./tools/linux/ninja -C out BareBones
+            
+        - run:
+            name: Copying Artifacts
+            command: |
+                mkdir artifacts
+                cp out/*.so artifacts/
+                cp out/BareBones artifacts/
+
+                cp out/Assets/*.pxl artifacts/
+    
+        - store_artifacts:
+            path: artifacts
+
+workflows:
+  version: 2.1
+  IceSDK:
+    jobs:
+        - BareBones_Win32
+        - BareBones_Linux
