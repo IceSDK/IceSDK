@@ -3,9 +3,9 @@ import("//IceSDK/IceSDK.gni")
 IceSDK_Test("IceSDK") {
     sources = [
         "Memory/Allocator.cc",
+        "Memory/Buffer.cc",
 
         "Utils/FileSystem.cc",
         "Utils/String.cc",
-        "Utils/Buffer.cc",
     ]
 }
