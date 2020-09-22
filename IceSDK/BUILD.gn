@@ -47,6 +47,7 @@ unity_lib("IceSDK") {
         "Graphics/Shaders/ShaderManager.cc",
 
         "Graphics/Systems/SpriteRenderingSystem.cc",
+        "Graphics/Systems/TextRenderingSystem.cc",
 
         "Graphics/ImGui/bgfx_imgui.cc",
 #       "ImGui/Widgets/AssetBrowser.cc",

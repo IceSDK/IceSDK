@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Jenkins.h"
+
 namespace IceSDK
 {
     namespace String
@@ -12,6 +14,26 @@ namespace IceSDK
             input.erase(input.find_last_not_of(search) + 1);
 
             return input;
+        }
+
+        inline uint64_t CalculateHash(std::string input)
+        {
+            if (input.empty())
+                return 0;
+
+            while (input.length() % 4 != 0)
+                input += 0xEE;
+
+            uint32_t hash1 = 0;
+            uint32_t hash2 = 0;
+            hashlittle2(input.data(), input.size(), &hash1, &hash2);
+
+            uint64_t hash = 0;
+            hash = hash1;
+            hash <<= 32;
+            hash |= hash2;
+
+            return hash;
         }
     } // namespace String
 } // namespace IceSDK

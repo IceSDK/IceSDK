@@ -133,6 +133,11 @@ Memory::Ptr<Graphics::Shaders::ShaderManager> GameBase::GetShaderManager() const
 	return this->_shader_manager;
 }
 
+Memory::Ptr<Graphics::FontManager> GameBase::GetFontManager() const
+{
+	return this->_font_manager;
+}
+
 Memory::WeakPtr<Scene> GameBase::GetActiveScene() const
 {
 	return this->_active_scene;
