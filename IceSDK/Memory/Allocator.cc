@@ -20,6 +20,7 @@ Block Memory::Create(size_t pBlockSize, BlockFlags pBlockFlags, bool pDirty)
 
     metaData->Begin = block;
     metaData->Flags = pBlockFlags;
+    metaData->RefCount = 0;
     memset(metaData->_, NULL, 0x30);
 
     if (pDirty == false)

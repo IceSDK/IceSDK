@@ -18,6 +18,8 @@ namespace IceSDK::Memory
         # Allocate further 64 bytes for meta data
         Size           = 0x00
         Flags          = 0x08
+        RefCount       = 0x0F
+        ...
         End            = 0x40
     }
     */
@@ -25,6 +27,7 @@ namespace IceSDK::Memory
     {
         /* 0x00 */ uint64_t Begin; // End can be calculated using Begin + Size
         /* 0x08 */ uint64_t Flags;
+        /* 0x0F */ uint64_t RefCount;
 
         // Make sure MemoryBlockMetaData is always 64 Bytes big
         uint8_t _[0x30];
