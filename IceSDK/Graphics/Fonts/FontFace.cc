@@ -65,6 +65,11 @@ void FontFace::SetSize(size_t size)
 
 void FontFace::LoadGlyph(uint32_t glyph)
 {
+    // We don't want a glyph to be loaded twice!
+    for (auto &atlas : this->_font_atlases)
+        if (atlas.Glyphs.count(glyph))
+            return;
+
     FT_Error err;
     err = FT_Load_Char(this->_face, glyph, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT);
     if (err != FT_Err_Ok)
@@ -111,8 +116,8 @@ void FontFace::LoadGlyph(uint32_t glyph)
         atlas->Atlas = Graphics::Texture2D::Create("FontAtlas", FT_ATLAS_SIZE, FT_ATLAS_SIZE, bgfx::TextureFormat::RGBA8);
     }
 
-    atlas->Glyphs.insert({ glyph, _glyph });
-
+    _glyph.Offset = atlas->Pen;
+    atlas->Glyphs.insert({glyph, _glyph});
     atlas->Pen.x += _glyph.Advance;
     if (atlas->Pen.x + _glyph.Size.x >= FT_ATLAS_SIZE)
     {
