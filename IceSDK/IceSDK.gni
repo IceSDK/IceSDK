@@ -9,11 +9,9 @@ template("IceSDK_Project") {
 
     action("Assets_$target_name") {
         script = "//tools/compile_assets.py"
-        args = [ host_os, rebase_path(root_build_dir), rebase_path(".") ]
+        args = [ host_os, rebase_path(root_build_dir), rebase_path(".",root_build_dir) ]
 
         inputs = invoker.assets
-
-        print(args)
 
         outputs = [ "$target_out_dir/Assets/0.pxl" ]
     }
