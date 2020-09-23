@@ -21,6 +21,8 @@ namespace IceSDK::Graphics
         glm::vec2 Offset; // Top    && left
         float Advance;    // Left string offset
 
+        size_t AtlasIndex;
+
         std::vector<glm::vec4> PixelData; // TODO: delete this data
     };
 

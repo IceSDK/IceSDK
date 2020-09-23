@@ -30,6 +30,7 @@ GameBase::GameBase()
 	this->_window = std::make_shared<Graphics::GameWindow>(800, 600, "IceSDK: Game Window");
 	this->_audio_system = std::make_shared<Audio::AudioSystem>();
 	this->_asset_manager = std::make_shared<Assets::AssetManager>();
+	this->_font_manager = std::make_shared<Graphics::FontManager>();
 	this->_shader_manager = std::make_shared<Graphics::Shaders::ShaderManager>();
 
 	this->_asset_manager->Init();
@@ -42,6 +43,7 @@ GameBase::~GameBase()
 	this->_active_scene = nullptr;
 	this->_asset_manager = nullptr;
 	this->_audio_system = nullptr;
+	this->_font_manager = nullptr;
 	this->_shader_manager = nullptr;
 	this->_window = nullptr;
 }

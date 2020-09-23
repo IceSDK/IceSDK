@@ -17,9 +17,12 @@ namespace IceSDK::Graphics
         // and all it's font atlasses! it'll slow down
         // on the first render
         void SetSize(size_t size);
+        size_t GetSize();
 
         // Load a single character to a font atlas
         void LoadGlyph(uint32_t glyph);
+
+        Glyph &GetGlyph(uint32_t glyph);
 
         Memory::Ptr<Texture2D> GetAtlas(size_t index);
 

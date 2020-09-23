@@ -63,6 +63,11 @@ void FontFace::SetSize(size_t size)
     this->_font_atlases.clear();
 }
 
+size_t FontFace::GetSize()
+{
+    return this->_size;
+}
+
 void FontFace::LoadGlyph(uint32_t glyph)
 {
     // We don't want a glyph to be loaded twice!
@@ -94,8 +99,11 @@ void FontFace::LoadGlyph(uint32_t glyph)
 
         (float)(this->_face->glyph->advance.x >> 6),
 
+        0,
+
         pixel_data};
 
+    size_t atlasIndex = 0;
     FontAtlas *atlas = nullptr;
     // Find an empty font atlas
     for (auto &_atlas : this->_font_atlases)
@@ -105,6 +113,8 @@ void FontFace::LoadGlyph(uint32_t glyph)
             atlas = &_atlas;
             break;
         }
+
+        atlasIndex += 1;
     }
 
     if (atlas == nullptr)
@@ -117,6 +127,8 @@ void FontFace::LoadGlyph(uint32_t glyph)
     }
 
     _glyph.Offset = atlas->Pen;
+    _glyph.AtlasIndex = atlasIndex;
+
     atlas->Glyphs.insert({glyph, _glyph});
     atlas->Pen.x += _glyph.Advance;
     if (atlas->Pen.x + _glyph.Size.x >= FT_ATLAS_SIZE)
@@ -139,6 +151,19 @@ void FontFace::LoadGlyph(uint32_t glyph)
     }
 
     bgfx::updateTexture2D(atlas->Atlas->GetHandle(), 0, 0, atlas->Pen.x, atlas->Pen.y, _glyph.Size.x, _glyph.Size.y, memory, _glyph.Size.x * 4);
+}
+
+Glyph &FontFace::GetGlyph(uint32_t glyph)
+{
+    this->LoadGlyph(glyph); // Make sure glyph is loaded
+
+    for (auto &&atlas : this->_font_atlases)
+    {
+        if (!atlas.Glyphs.count(glyph))
+            break;
+
+        return atlas.Glyphs[glyph];
+    }
 }
 
 Memory::Ptr<Texture2D> FontFace::GetAtlas(size_t index)

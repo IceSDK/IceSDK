@@ -23,36 +23,27 @@ protected:
 		Graphics::Entity::Init(this->GetShaderManager());
 		Graphics::Entity::InitScene(this->_active_scene);
 
-		_texture = this->GetAssetManager()->LoadTexture("/Assets/Mempler.png");
-		_sprite = Graphics::Entity::CreateSprite(this->_active_scene, this->GetShaderManager(), _texture);
-
-		Graphics::FontFace::Init();
-
-		_face = Graphics::FontFace::FromFile("./RobotoMono-Regular.ttf", 24);
-		if (_face == nullptr)
+		_fontHandle = GetFontManager()->LoadFont("./RobotoMono-Regular.ttf");
+		ICESDK_TRACE("{}", _fontHandle);
+		if (_fontHandle == INVALID_FONT_FACE_HANDLE)
+		{
 			ICESDK_CRITICAL("Failed to initialize FontFace!");
+			return;
+		}
 
-		_font_atlas = _face->GetAtlas(0);
+		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 16, _fontHandle);
 	}
 
 	void Draw(float pDelta) override
 	{
 		// ImGuiWidgets::AssetBrowser::Frame(this->GetAssetManager());
 		ImGuiWidgets::SceneGraph::Frame(this->GetActiveScene());
-
-		ImGui::Begin("Font Atlas");
-		{
-			if (_font_atlas != nullptr)
-				ImGui::Image((ImTextureID)this->_font_atlas->GetHandle().idx, {FT_ATLAS_SIZE, FT_ATLAS_SIZE});
-		}
-		ImGui::End();
 	}
 
 private:
-	Memory::Ptr<Graphics::Texture2D> _texture;
-	Memory::Ptr<Graphics::Texture2D> _font_atlas;
-	Entity _sprite;
-	Memory::Ptr<Graphics::FontFace> _face;
+	Graphics::FontFaceHandle _fontHandle;
+
+	Entity _font;
 };
 
 Memory::Ptr<Game> g_Game;

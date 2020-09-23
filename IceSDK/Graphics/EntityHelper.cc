@@ -89,7 +89,12 @@ IceSDK::Entity Graphics::Entity::CreateSprite(
 		bgfx::createIndexBuffer(bgfx::makeRef(g_SpriteIndices, sizeof g_SpriteIndices)));
 
 	entity.AddComponent<Graphics::Components::ShaderComponent>(pShaderManager.get()->LoadProgram("Sprite"));
-	entity.AddComponent<Graphics::Components::SpriteComponent>(glm::vec2(pTex->Width(), pTex->Height()), pTex);
+
+	glm::vec2 TexSize;
+	if (pTex != nullptr)
+		TexSize = {pTex->Width(), pTex->Height()};
+
+	entity.AddComponent<Graphics::Components::SpriteComponent>(TexSize, pTex);
 
 	return entity;
 }
@@ -102,7 +107,7 @@ IceSDK::Entity Graphics::Entity::CreateText(
 	ICESDK_PROFILE_FUNCTION();
 
 	auto entity = Entity::CreateSprite(pScene, pShaderManager, nullptr);
-	entity.AddComponent<Graphics::Components::TextComponent>(pText, "", pFontSize, pFontFace);
+	entity.AddComponent<Graphics::Components::TextComponent>(pText, (uint64_t)0, pFontSize, pFontFace);
 
 	return entity;
 }
