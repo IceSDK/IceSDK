@@ -75,6 +75,7 @@ unity_lib("IceSDK") {
         "//third-party/sdl2/include", # SDL2
         "//third-party/imgui", # ImGui
         "//third-party/freetype/include", # FREETYPE 2
+        "//third-party/harfbuzz/src", # HARFBUZZ
 
         #######################################################
         #                        Maths                        #
@@ -87,6 +88,8 @@ unity_lib("IceSDK") {
         "//third-party/entt/single_include", # ENTT
         "//third-party/spdlog/include", # SPDLOG
 
+        "//third-party/icu/source/common", # ICU
+        "//third-party/icu/source/i18n", # ICU
     ]
     defines      = [
     ]
@@ -157,7 +160,9 @@ unity_lib("IceSDK") {
         "//third-party/bimg",
         "//third-party/bx",
 
-        "//third-party/freetype"
+        "//third-party/freetype",
+        "//third-party/harfbuzz:HarfBuzz",
+        "//third-party/icu",
     ]
 
     if (is_android) { # TODO: figure out how to link fmod with android

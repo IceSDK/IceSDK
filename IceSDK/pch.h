@@ -73,6 +73,9 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 
+#include "hb.hh"
+#include "hb-ft.h"
+
 #include <iterator>
 #include <iostream>
 #include <sstream>

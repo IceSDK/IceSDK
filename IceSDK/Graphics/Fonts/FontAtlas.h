@@ -19,9 +19,10 @@ namespace IceSDK::Graphics
     {
         glm::vec2 Size;   // Bottom && Right
         glm::vec2 Offset; // Top    && left
-        float Advance;    // Left string offset
-        float descent;    // X
-        float ascent;     // Y
+        glm::vec2 Bearing;
+        float Advance; // Left string offset
+        float descent; // X
+        float ascent;  // Y
 
         size_t AtlasIndex;
 
@@ -30,7 +31,7 @@ namespace IceSDK::Graphics
 
     struct FontAtlas
     {
-        std::unordered_map<int32_t, Glyph> Glyphs;
+        std::unordered_map<uint32_t, Glyph> Glyphs;
         Memory::Ptr<Graphics::Texture2D> Atlas;
 
         glm::vec2 Pen;

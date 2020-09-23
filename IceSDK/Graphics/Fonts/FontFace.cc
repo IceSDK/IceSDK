@@ -19,6 +19,12 @@ Memory::Ptr<FontFace> FontFace::FromMemory(const std::vector<uint8_t> &pData, si
     if (err != FT_Err_Ok)
         ICESDK_CORE_ERROR("Failed to load FontFace! ({:x})", err);
 
+    font->_font = hb_ft_font_create(font->_face, NULL);
+    font->_buffer = hb_buffer_create();
+
+    if (!hb_buffer_allocation_successful(font->_buffer))
+        ICESDK_CORE_ERROR("Failed to allocate HarfBuzz buffer!");
+
     // Cache most important ascii characters, everything else can be cached at runtime
     const char *ascii = " abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!?.,";
 
@@ -26,7 +32,12 @@ Memory::Ptr<FontFace> FontFace::FromMemory(const std::vector<uint8_t> &pData, si
 
     for (size_t i = 0; i < 65; i++)
     {
-        font->LoadGlyph(ascii[i]);
+        FT_Error err;
+        err = FT_Load_Char(font->_face, ascii[i], FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_TARGET_LIGHT);
+        if (err != FT_Err_Ok)
+            ICESDK_CORE_ERROR("Failed to load Font Glyph! ({:x})", err);
+
+        font->LoadGlyph(font->_face->glyph->glyph_index);
     }
 
     return font;
@@ -75,10 +86,9 @@ void FontFace::LoadGlyph(uint32_t glyph)
         if (atlas.Glyphs.count(glyph))
             return;
 
-    FT_Error err;
-    err = FT_Load_Char(this->_face, glyph, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT);
-    if (err != FT_Err_Ok)
-        ICESDK_CORE_ERROR("Failed to load Font Glyph! ({:x})", err);
+    FT_Load_Glyph(this->_face,
+                  glyph,
+                  FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_TARGET_LIGHT);
 
     FT_Bitmap *bmp = &this->_face->glyph->bitmap;
     std::vector<glm::vec4> pixel_data;
@@ -105,6 +115,7 @@ void FontFace::LoadGlyph(uint32_t glyph)
 
     Glyph _glyph{
         {bmp->width, bmp->rows},
+        {0.0, 0.0},
         {this->_face->glyph->bitmap_left, this->_face->glyph->bitmap_top},
         (float)(this->_face->glyph->advance.x >> 6),
         (float)tmp_descent,

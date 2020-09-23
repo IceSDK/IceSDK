@@ -31,7 +31,7 @@ protected:
 			return;
 		}
 
-		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 48, _fontHandle);
+		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 32, _fontHandle);
 	}
 
 	void Draw(float pDelta) override

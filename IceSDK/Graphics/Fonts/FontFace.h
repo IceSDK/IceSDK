@@ -3,11 +3,22 @@
 #include "FontAtlas.h"
 #include "Graphics/Texture2D.h"
 
+#include "hb.hh"
+#include "hb-ft.h"
+
+#undef getenv // Harfbuzz sets this but it's incompatible with spdlog
+
 namespace IceSDK::Graphics
 {
     class FontFace
     {
     public:
+        ~FontFace()
+        {
+            hb_buffer_destroy(this->_buffer);
+            hb_font_destroy(this->_font);
+        }
+
         static Memory::Ptr<FontFace> FromMemory(const std::vector<uint8_t> &pData, size_t pFontSize);
         static Memory::Ptr<FontFace> FromFile(const std::string &pPath, size_t pFontSize);
 
@@ -28,7 +39,19 @@ namespace IceSDK::Graphics
 
         Memory::Ptr<Texture2D> GetAtlas(size_t index);
 
+        hb_buffer_t *_hb_buffer()
+        {
+            return _buffer;
+        }
+
+        hb_font_t *_hb_font()
+        {
+            return _font;
+        }
+
     private:
+        hb_buffer_t *_buffer;
+        hb_font_t *_font;
         FT_Face _face;
         size_t _size;
 

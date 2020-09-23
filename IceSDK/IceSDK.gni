@@ -67,7 +67,7 @@ template("IceSDK_Project") {
                 "//third-party/bgfx/include", "//third-party/bimg/include", "//third-party/bx/include",
                 "//third-party/glfw/include", "//third-party/entt/single_include", "//third-party/glm", 
                 "//third-party/imgui", "//third-party/sdl2/include", "//third-party/spdlog/include",
-                "//third-party/freetype/include",
+                "//third-party/freetype/include", "//third-party/harfbuzz/src",
             ]
 
             deps += [
@@ -163,7 +163,8 @@ template("IceSDK_Project") {
                 "//third-party/bgfx/include", "//third-party/bimg/include", "//third-party/bx/include",
                 "//third-party/glfw/include", "//third-party/entt/single_include", "//third-party/glm", 
                 "//third-party/imgui", "//third-party/sdl2/include", "//third-party/spdlog/include",
-                "//third-party/freetype/include",
+                "//third-party/freetype/include", "//third-party/harfbuzz/src", "//third-party/icu/source/common",
+                "//third-party/icu/source/i18n",
             ]
 
             deps += [

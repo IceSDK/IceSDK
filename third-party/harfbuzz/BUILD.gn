@@ -1,0 +1,22 @@
+static_library("HarfBuzz") {
+    sources = [
+        "src/harfbuzz.cc",
+        "src/hb-icu.cc"
+    ]
+    defines = [
+        "HAVE_FREETYPE",
+        "HB_NO_GETENV", # incompatible with spdlog
+        "HAVE_ICU"
+    ]
+
+    deps = [
+        "//third-party/freetype",
+        "//third-party/icu",
+    ]
+
+    include_dirs = [
+        "//third-party/freetype/include",
+        "//third-party/icu/source/common",
+        "//third-party/icu/source/i18n",
+    ]
+}
