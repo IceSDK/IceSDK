@@ -93,11 +93,22 @@ void FontFace::LoadGlyph(uint32_t glyph)
         }
     }
 
+    int tmp_ascent = 0, tmp_descent = 0;
+    if (tmp_descent < (bmp->width - this->_face->glyph->bitmap_top))
+        tmp_descent = bmp->width - this->_face->glyph->bitmap_top;
+
+    // calculate ascent
+    if (this->_face->glyph->bitmap_top < bmp->rows)
+        tmp_ascent = bmp->rows;
+    else
+        tmp_ascent = this->_face->glyph->bitmap_top;
+
     Glyph _glyph{
         {bmp->width, bmp->rows},
         {this->_face->glyph->bitmap_left, this->_face->glyph->bitmap_top},
-
         (float)(this->_face->glyph->advance.x >> 6),
+        (float)tmp_descent,
+        (float)tmp_ascent,
 
         0,
 
@@ -151,6 +162,18 @@ void FontFace::LoadGlyph(uint32_t glyph)
     }
 
     bgfx::updateTexture2D(atlas->Atlas->GetHandle(), 0, 0, atlas->Pen.x, atlas->Pen.y, _glyph.Size.x, _glyph.Size.y, memory, _glyph.Size.x * 4);
+}
+
+float FontFace::GetKerningOffset(uint32_t pGlyph, uint32_t pPreviousGlyph)
+{
+    FT_Error err;
+    FT_Vector kerning;
+
+    err = FT_Get_Kerning(this->_face, pGlyph, pPreviousGlyph, FT_KERNING_DEFAULT, &kerning);
+    if (err != FT_Err_Ok)
+        ICESDK_CORE_CRITICAL("Failed to get Kerning Offset! ({:x})", err);
+
+    return kerning.x / 64;
 }
 
 Glyph &FontFace::GetGlyph(uint32_t glyph)

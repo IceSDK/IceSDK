@@ -20,6 +20,8 @@ namespace IceSDK::Graphics
         glm::vec2 Size;   // Bottom && Right
         glm::vec2 Offset; // Top    && left
         float Advance;    // Left string offset
+        float descent;    // X
+        float ascent;     // Y
 
         size_t AtlasIndex;
 

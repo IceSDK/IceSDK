@@ -22,6 +22,8 @@ namespace IceSDK::Graphics
         // Load a single character to a font atlas
         void LoadGlyph(uint32_t glyph);
 
+        float GetKerningOffset(uint32_t pGlyph, uint32_t pPreviousGlyph);
+
         Glyph &GetGlyph(uint32_t glyph);
 
         Memory::Ptr<Texture2D> GetAtlas(size_t index);

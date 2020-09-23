@@ -23,7 +23,7 @@ protected:
 		Graphics::Entity::Init(this->GetShaderManager());
 		Graphics::Entity::InitScene(this->_active_scene);
 
-		_fontHandle = GetFontManager()->LoadFont("./RobotoMono-Regular.ttf");
+		_fontHandle = GetFontManager()->LoadFont("./Roboto-Regular.ttf");
 		ICESDK_TRACE("{}", _fontHandle);
 		if (_fontHandle == INVALID_FONT_FACE_HANDLE)
 		{
@@ -31,7 +31,7 @@ protected:
 			return;
 		}
 
-		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 16, _fontHandle);
+		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 48, _fontHandle);
 	}
 
 	void Draw(float pDelta) override

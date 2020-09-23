@@ -8,7 +8,7 @@
 using namespace IceSDK;
 using namespace IceSDK::Graphics;
 
-std::tuple<Glyph, Memory::Ptr<Texture2D>> FontManager::GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize)
+std::tuple<Glyph, Memory::Ptr<Texture2D>, Memory::Ptr<FontFace>> FontManager::GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize)
 {
     if (pFont == INVALID_FONT_FACE_HANDLE)
         ICESDK_CORE_CRITICAL("Passed FontFaceHandle is invalid! f: {} g: {} s: {}", pFont, pGlyph, pSize);
@@ -24,7 +24,7 @@ std::tuple<Glyph, Memory::Ptr<Texture2D>> FontManager::GetGlyph(FontFaceHandle p
 
             foundFace = true;
 
-            return {glyph, face->GetAtlas(glyph.AtlasIndex)};
+            return {glyph, face->GetAtlas(glyph.AtlasIndex), face};
         }
     }
 
@@ -36,10 +36,10 @@ std::tuple<Glyph, Memory::Ptr<Texture2D>> FontManager::GetGlyph(FontFaceHandle p
 
         auto glyph = face->GetGlyph(pGlyph);
 
-        return {glyph, face->GetAtlas(glyph.AtlasIndex)};
+        return {glyph, face->GetAtlas(glyph.AtlasIndex), face};
     }
 
-    return {{}, nullptr};
+    return {{}, nullptr, nullptr};
 }
 
 FontFaceHandle FontManager::LoadFont(const std::string &pPath)

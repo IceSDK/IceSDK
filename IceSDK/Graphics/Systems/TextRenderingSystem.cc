@@ -12,6 +12,7 @@
 #include "Utils/Math.h"
 #include "Utils/String.h"
 #include "Utils/Instrumentor.h"
+#include "Utils/Logger.h"
 
 #include "cmath"
 
@@ -43,30 +44,41 @@ void TextRenderingSystem::Draw(float pDelta)
         // Re-render text if it has changed
         if (String::CalculateHash(text.text) + text.font_size != text._old_text)
         {
-            glm::vec2 resolution{};
-
             auto fontManager = GetGameBase()->GetFontManager();
 
-            // Calculate texture size
+            // Calculate text dimensions
+            uint32_t last_character = 0;
+            glm::vec2 resolution{};
+            float baseLine = 0;
             for (auto c : text.text)
             {
-                auto [glyph, atlas] = fontManager->GetGlyph(text.font_face_handle, c, text.font_size);
+                auto [glyph, atlas, fontFace] = fontManager->GetGlyph(text.font_face_handle, c, text.font_size);
 
-                // TODO: center the glyphs
+                baseLine = Math::Max(baseLine, glyph.descent);
+                resolution.y = Math::Max(resolution.y, glyph.ascent); // Highest Height
 
-                resolution.x += glyph.Advance;
-                resolution.y = Math::Max(resolution.y, glyph.Size.y); // Highest Height
+                auto kerning = fontFace->GetKerningOffset(c, last_character);
+                if ((glyph.Advance + kerning) < (glyph.Size.x + kerning))
+                    resolution.x += (glyph.Size.x + kerning);
+                else
+                    resolution.x += (glyph.Advance + kerning);
+
+                last_character = c;
             }
 
             // Create a Text Sprite
             sprite.size = resolution;
             sprite.texture = Texture2D::Create("Text: " + text.text, resolution.x, resolution.y, bgfx::TextureFormat::RGBA8);
 
+            last_character = 0;
             glm::vec2 pen{};
             // Draw glyphs
             for (auto c : text.text)
             {
-                auto [glyph, atlas] = fontManager->GetGlyph(text.font_face_handle, c, text.font_size);
+                auto [glyph, atlas, fontFace] = fontManager->GetGlyph(text.font_face_handle, c, text.font_size);
+
+                pen.x += fontFace->GetKerningOffset(c, last_character);
+                pen.y = sprite.size.y - glyph.ascent - baseLine;
 
                 // TODO: GPU acceleration using an shader and it's font atlas...
                 {
@@ -83,7 +95,7 @@ void TextRenderingSystem::Draw(float pDelta)
                         bx::memCopy(&memory->data[i * 4], (void *)&pixel_value, 4);
                     }
 
-                    bgfx::updateTexture2D(sprite.texture->GetHandle(), 0, 0, pen.x, pen.y, glyph.Size.x, glyph.Size.y, memory, glyph.Size.x * 4);
+                    bgfx::updateTexture2D(sprite.texture->GetHandle(), 0, 0, pen.x, pen.y + baseLine, glyph.Size.x, glyph.Size.y, memory, glyph.Size.x * 4);
                 }
                 // TODO end
 

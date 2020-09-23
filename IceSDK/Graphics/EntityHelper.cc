@@ -7,6 +7,7 @@
 #include "Graphics/Components/SpriteComponent.h"
 #include "Graphics/Components/TextComponent.h"
 
+#include "ECS/Components/BaseComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Scene.h"
 
@@ -107,6 +108,10 @@ IceSDK::Entity Graphics::Entity::CreateText(
 	ICESDK_PROFILE_FUNCTION();
 
 	auto entity = Entity::CreateSprite(pScene, pShaderManager, nullptr);
+
+	auto &baseComponent = entity.GetComponent<IceSDK::Components::BaseComponent>();
+	baseComponent.name = "TextSprite";
+
 	entity.AddComponent<Graphics::Components::TextComponent>(pText, (uint64_t)0, pFontSize, pFontFace);
 
 	return entity;
