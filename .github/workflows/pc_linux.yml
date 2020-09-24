@@ -27,19 +27,6 @@ jobs:
         run: |
           chmod +x ./tools/linux/ninja
           ./tools/linux/ninja -C out BareBones
-      
-      - name: Copy Artifacts
-        run: |
-          mkdir artifacts
-          cp out/*.so.* artifacts/ || \
-          cp out/BareBones artifacts/ || \
-          cp -R out/Assets/ artifacts/
-          
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: BareBones
-          path: artifacts/
   
   TestIceSDK:
     runs-on: ubuntu-20.04

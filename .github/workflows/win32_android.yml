@@ -19,16 +19,3 @@ jobs:
 
       - name: Build BareBones
         run: .\tools\win\ninja.exe -C out BareBones
-      
-      - name: Copy Artifacts
-        run: |
-          mkdir artifacts
-          robocopy out artifacts *.dll *.exe *.pdb
-          robocopy out\Assets artifacts\Assets *.pxl
-          exit 0
-          
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: BareBones
-          path: artifacts/

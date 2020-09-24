@@ -39,18 +39,3 @@ jobs:
           source ./emsdk/emsdk_env.sh
 
           ./tools/linux/ninja -C out BareBones
-
-      - name: Copy Artifacts
-        run: |
-          mkdir artifacts
-
-          cp ./out/*.wasm artifacts/    || \
-          cp ./out/*.html artifacts/    || \
-          cp ./out/*.js artifacts/      || \
-          cp ./out/*.fs.data artifacts/
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: BareBones
-          path: artifacts/

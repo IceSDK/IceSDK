@@ -36,15 +36,3 @@ jobs:
           .\emsdk\emsdk_env.ps1
           .\tools\win\ninja.exe -C out BareBones
         shell: pwsh
-      
-      - name: Copy Artifacts
-        run: |
-          mkdir artifacts
-          robocopy out artifacts *.wasm *.html *.js *.fs.data
-          exit 0
-          
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: BareBones
-          path: artifacts/

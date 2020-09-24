@@ -195,9 +195,13 @@ unity_lib("IceSDK") {
         "HB_NO_GETENV", # incompatible with spdlog
         "HAVE_ICU"
     ]
-    if (is_posix) {
+    if (is_posix && !is_emscripten) {
         defines += [ "HAVE_PTHREAD" ]
         libs += [ "pthread" ]
+    }
+
+    if (is_emscripten) {
+        defines += [ "HB_NO_MT" ]
     }
 }
 
