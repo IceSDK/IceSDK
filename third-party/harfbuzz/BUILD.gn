@@ -8,6 +8,12 @@ static_library("HarfBuzz") {
         "HB_NO_GETENV", # incompatible with spdlog
         "HAVE_ICU"
     ]
+    libs = [ ]
+
+    if (is_posix) {
+        defines += [ "HAVE_PTHREAD" ]
+        libs += [ "pthread" ]
+    }
 
     deps = [
         "//third-party/freetype",

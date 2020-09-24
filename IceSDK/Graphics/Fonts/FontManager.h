@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Graphics/Fonts/FontAtlas.h"
 #include "Graphics/Fonts/FontFace.h"
 
 #define INVALID_FONT_FACE_HANDLE -1

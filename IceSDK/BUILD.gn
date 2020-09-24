@@ -188,6 +188,17 @@ unity_lib("IceSDK") {
             defines += [ "SDL_VIDEO_DRIVER_X11" ]
         }
     }
+
+    # HarfBuzz
+    defines += [
+        "HAVE_FREETYPE",
+        "HB_NO_GETENV", # incompatible with spdlog
+        "HAVE_ICU"
+    ]
+    if (is_posix) {
+        defines += [ "HAVE_PTHREAD" ]
+        libs += [ "pthread" ]
+    }
 }
 
 

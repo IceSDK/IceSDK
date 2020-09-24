@@ -75,6 +75,17 @@ template("IceSDK_Project") {
             ]
 
             libs += [ "stdc++" ]
+
+            # HarfBuzz
+            defines += [
+                "HAVE_FREETYPE",
+                "HB_NO_GETENV", # incompatible with spdlog
+                "HAVE_ICU"
+            ]
+            if (is_posix) {
+                defines += [ "HAVE_PTHREAD" ]
+                libs += [ "pthread" ]
+            }
         }
     } else {
         orig_target_name = target_name
@@ -211,6 +222,16 @@ template("IceSDK_Project") {
                 ldflags += emscripten_ldflags
 
                 cflags_cc += emscripten_flags
+            }
+
+            # HarfBuzz
+            defines += [
+                "HAVE_FREETYPE",
+                "HB_NO_GETENV", # incompatible with spdlog
+                "HAVE_ICU"
+            ]
+            if (is_posix) {
+                defines += [ "HAVE_PTHREAD" ]
             }
         }
     }

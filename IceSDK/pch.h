@@ -35,7 +35,17 @@
 #endif
 
 #include "GLFW/glfw3.h"
+
+#ifdef ICESDK_LINUX
+#define Glyph _Glyph
+#endif
+
 #include "GLFW/glfw3native.h"
+
+#ifdef ICESDK_LINUX
+#undef Glyph
+#endif
+
 #endif
 
 #ifdef ICESDK_SDL2
