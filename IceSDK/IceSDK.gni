@@ -230,7 +230,6 @@ template("IceSDK_Project") {
             ]
             if (is_posix && !is_emscripten) {
                 defines += [ "HAVE_PTHREAD" ]
-                libs += [ "pthread" ]
             }
 
             if (is_emscripten) {
