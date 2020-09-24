@@ -82,10 +82,8 @@ template("IceSDK_Project") {
                 "HB_NO_GETENV", # incompatible with spdlog
                 "HAVE_ICU"
             ]
-            if (is_posix) {
-                defines += [ "HAVE_PTHREAD" ]
-                libs += [ "pthread" ]
-            }
+            defines += [ "HAVE_PTHREAD" ]
+            libs += [ "pthread" ]
         }
     } else {
         orig_target_name = target_name
@@ -230,8 +228,13 @@ template("IceSDK_Project") {
                 "HB_NO_GETENV", # incompatible with spdlog
                 "HAVE_ICU"
             ]
-            if (is_posix) {
+            if (is_posix && !is_emscripten) {
                 defines += [ "HAVE_PTHREAD" ]
+                libs += [ "pthread" ]
+            }
+
+            if (is_emscripten) {
+                defines += [ "HB_NO_MT" ]
             }
         }
     }
