@@ -108,9 +108,9 @@ Glyph &FontFace::GetGlyph(uint32_t pGlyph)
     std::vector<uint8_t> pixel_data;
     pixel_data.reserve(bmp->width * bmp->rows * 4);
 
-    for (int row = 0; row < bmp->rows; ++row)
+    for (size_t row = 0; row < bmp->rows; ++row)
     {
-        for (int col = 0; col < bmp->width; ++col)
+        for (size_t col = 0; col < bmp->width; ++col)
         {
             auto pixel = (uint8_t)bmp->buffer[row * bmp->pitch + col];
 

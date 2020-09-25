@@ -156,12 +156,12 @@ void GameBase::Shutdown()
 
 void GameBase::Update(float pDelta)
 {
-	BX_UNUSED(pDelta);
+	BX_UNUSED(pDelta)
 }
 
 void GameBase::Draw(float pDelta)
 {
-	BX_UNUSED(pDelta);
+	BX_UNUSED(pDelta)
 }
 
 void GameBase::InitDraw()

@@ -32,10 +32,6 @@ void SpriteRenderingSystem::Draw(float pDelta)
 	if (registry == nullptr)
 		return;
 
-	auto activeCam = CameraSystem::GetActiveCamera(this->_registry);
-	if (!Entity::IsValid(activeCam))
-		return;
-
 	auto spriteGroup = registry->view<SpriteComponent>();
 	for (auto rawSpriteEntity : spriteGroup)
 	{
@@ -45,8 +41,6 @@ void SpriteRenderingSystem::Draw(float pDelta)
 		auto &transform = spriteEntity.GetComponent<TransformComponent>();
 		auto &sprite = spriteEntity.GetComponent<SpriteComponent>();
 		auto &shader = spriteEntity.GetComponent<ShaderComponent>();
-
-		auto &camera = activeCam.GetComponent<CameraComponent>();
 
 		if (sprite.texture == nullptr ||
 			!bgfx::isValid(mesh.index_buffer) ||

@@ -91,17 +91,16 @@ void TextRenderingSystem::Draw(float pDelta)
             glm::vec2 textSize{};
             float highestBearing = 0;
 
-            for (int i = 0; i < glyphCount; ++i)
+            for (size_t i = 0; i < glyphCount; ++i)
             {
                 auto glyphInfo = glyphInfos[i];
-                auto glyphPos = glyphPositions[i];
 
                 auto [glyph, fontFace] = fontManager->GetGlyph(text.font_face_handle, glyphInfo.codepoint, text.font_size);
 
                 highestBearing = Math::Max(highestBearing, glyph.BearingBase);
 
-                int twidth = pow(2, ceil(log(glyph.Size.x) / log(2)));
-                int theight = pow(2, ceil(log(glyph.Size.y) / log(2)));
+                int twidth = pow(2, ceil(log((double)glyph.Size.x) / log(2)));
+                int theight = pow(2, ceil(log((double)glyph.Size.y) / log(2)));
 
                 textSize.x += twidth;
                 textSize.y = Math::Max(textSize.y, theight);
@@ -111,7 +110,7 @@ void TextRenderingSystem::Draw(float pDelta)
 
             // Render text
             glm::vec2 pen{};
-            for (int i = 0; i < glyphCount; ++i)
+            for (size_t i = 0; i < glyphCount; ++i)
             {
                 auto glyphInfo = glyphInfos[i];
                 auto glyphPos = glyphPositions[i];

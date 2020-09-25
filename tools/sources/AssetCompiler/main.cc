@@ -51,7 +51,7 @@ int main(const int pArgc, char *pArgv[])
             continue;
 
         Memory::Ptr<Assets::AssetFile> free_asset = nullptr;
-        for (const auto asset : assets) // NOTE: this will get slower and slower the more assets we have!
+        for (const auto &asset : assets) // NOTE: this will get slower and slower the more assets we have!
         {
             if (!asset->IsFull())
                 free_asset = asset;
@@ -108,7 +108,7 @@ int main(const int pArgc, char *pArgv[])
     if (!FileSystem::Exists(buildPath))
         FileSystem::MkDir(buildPath);
 
-    for (auto i = 0; i < assets.size(); ++i)
+    for (size_t i = 0; i < assets.size(); ++i)
     {
         auto asset = assets[i];
 

@@ -38,8 +38,6 @@ namespace IceSDK
 		Memory::Ptr<Scene> _active_scene;
 
 	private:
-		bool _exit{};
-
 		static void InternalDraw(float pDelta);
 		static void InternalTick(float pDelta);
 		static void InternalDrawInit();
@@ -48,6 +46,8 @@ namespace IceSDK
 		int64_t _last_delta;
 #ifdef ICESDK_EMSCRIPTEN
 		static void InternalMainLoop(void *arg);
+#else
+		bool _exit = false;
 #endif
 
 		Memory::Ptr<Graphics::GameWindow> _window;

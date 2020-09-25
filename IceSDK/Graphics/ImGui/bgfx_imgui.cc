@@ -93,10 +93,10 @@ struct OcornutImguiContext
 			bgfx::allocTransientVertexBuffer(&tvb, numVertices, m_layout);
 			bgfx::allocTransientIndexBuffer(&tib, numIndices);
 
-			auto verts = (ImDrawVert *)tvb.data;
+			auto verts = (ImDrawVert *)(void *)tvb.data;
 			bx::memCopy(verts, drawList->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
 
-			auto indices = (ImDrawIdx *)tib.data;
+			auto indices = (ImDrawIdx *)(void *)tib.data;
 			bx::memCopy(indices, drawList->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
 
 			uint32_t offset = 0;
@@ -259,13 +259,13 @@ static OcornutImguiContext s_ctx;
 
 static void *MemAlloc(size_t _size, void *_userData)
 {
-	BX_UNUSED(_userData);
+	BX_UNUSED(_userData)
 	return BX_ALLOC(s_ctx.m_allocator, _size);
 }
 
 static void MemFree(void *_ptr, void *_userData)
 {
-	BX_UNUSED(_userData);
+	BX_UNUSED(_userData)
 	BX_FREE(s_ctx.m_allocator, _ptr);
 }
 

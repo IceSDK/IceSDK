@@ -182,8 +182,8 @@ inline uint32_t hashword(
         a += k[0];
         b += k[1];
         c += k[2];
-        mix(a, b, c);
-        length -= 3;
+        mix(a, b, c)
+            length -= 3;
         k += 3;
     }
     /*------------------------------------------- handle the last 3 uint32_t's */
@@ -195,9 +195,8 @@ inline uint32_t hashword(
         b += k[1];
     case 1:
         a += k[0];
-        final(a, b, c);
-    case 0: /* case 0: nothing left to add */
-        break;
+        final(a, b, c) case 0 : /* case 0: nothing left to add */
+                                break;
     }
     /*------------------------------------------------------ report the result */
     return c;
@@ -226,8 +225,8 @@ inline void hashword2(
         a += k[0];
         b += k[1];
         c += k[2];
-        mix(a, b, c);
-        length -= 3;
+        mix(a, b, c)
+            length -= 3;
         k += 3;
     }
     /*------------------------------------------- handle the last 3 uint32_t's */
@@ -239,9 +238,8 @@ inline void hashword2(
         b += k[1];
     case 1:
         a += k[0];
-        final(a, b, c);
-    case 0: /* case 0: nothing left to add */
-        break;
+        final(a, b, c) case 0 : /* case 0: nothing left to add */
+                                break;
     }
     /*------------------------------------------------------ report the result */
     *pc = c;
@@ -289,8 +287,8 @@ inline uint32_t hashlittle(const void *key, size_t length, uint32_t initval)
             a += k[0];
             b += k[1];
             c += k[2];
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 3;
         }
         /*----------------------------- handle the last (probably partial) block */
@@ -408,8 +406,8 @@ inline uint32_t hashlittle(const void *key, size_t length, uint32_t initval)
             a += k[0] + (((uint32_t)k[1]) << 16);
             b += k[2] + (((uint32_t)k[3]) << 16);
             c += k[4] + (((uint32_t)k[5]) << 16);
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 6;
         }
         /*----------------------------- handle the last (probably partial) block */
@@ -475,8 +473,8 @@ inline uint32_t hashlittle(const void *key, size_t length, uint32_t initval)
             c += ((uint32_t)k[9]) << 8;
             c += ((uint32_t)k[10]) << 16;
             c += ((uint32_t)k[11]) << 24;
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 12;
         }
         /*-------------------------------- last block: affect all 32 bits of (c) */
@@ -511,8 +509,7 @@ inline uint32_t hashlittle(const void *key, size_t length, uint32_t initval)
             return c;
         }
     }
-    final(a, b, c);
-    return c;
+    final(a, b, c) return c;
 }
 /*
  * hashlittle2: return 2 32-bit hash values
@@ -549,8 +546,8 @@ inline void hashlittle2(
             a += k[0];
             b += k[1];
             c += k[2];
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 3;
         }
         /*----------------------------- handle the last (probably partial) block */
@@ -672,8 +669,8 @@ inline void hashlittle2(
             a += k[0] + (((uint32_t)k[1]) << 16);
             b += k[2] + (((uint32_t)k[3]) << 16);
             c += k[4] + (((uint32_t)k[5]) << 16);
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 6;
         }
         /*----------------------------- handle the last (probably partial) block */
@@ -741,8 +738,8 @@ inline void hashlittle2(
             c += ((uint32_t)k[9]) << 8;
             c += ((uint32_t)k[10]) << 16;
             c += ((uint32_t)k[11]) << 24;
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 12;
         }
         /*-------------------------------- last block: affect all 32 bits of (c) */
@@ -779,8 +776,8 @@ inline void hashlittle2(
             return; /* zero length strings require no mixing */
         }
     }
-    final(a, b, c);
-    *pc = c;
+    final(a, b, c)
+        *pc = c;
     *pb = b;
 }
 /*
@@ -809,8 +806,8 @@ inline uint32_t hashbig(const void *key, size_t length, uint32_t initval)
             a += k[0];
             b += k[1];
             c += k[2];
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 3;
         }
         /*----------------------------- handle the last (probably partial) block */
@@ -936,8 +933,8 @@ inline uint32_t hashbig(const void *key, size_t length, uint32_t initval)
             c += ((uint32_t)k[9]) << 16;
             c += ((uint32_t)k[10]) << 8;
             c += ((uint32_t)k[11]);
-            mix(a, b, c);
-            length -= 12;
+            mix(a, b, c)
+                length -= 12;
             k += 12;
         }
         /*-------------------------------- last block: affect all 32 bits of (c) */
@@ -972,6 +969,5 @@ inline uint32_t hashbig(const void *key, size_t length, uint32_t initval)
             return c;
         }
     }
-    final(a, b, c);
-    return c;
+    final(a, b, c) return c;
 }

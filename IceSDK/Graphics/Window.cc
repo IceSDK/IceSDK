@@ -75,7 +75,7 @@ GameWindow::GameWindow(int32_t pWidth, int32_t pHeight, const std::string &pTitl
 #endif
 #elif defined(ICESDK_SDL2)
 	SDL_SysWMinfo wmInfo;
-	SDL_VERSION(&wmInfo.version);
+	SDL_VERSION(&wmInfo.version)
 	SDL_GetWindowWMInfo(this->_window, &wmInfo);
 
 #ifdef ICESDK_WIN32

@@ -14,7 +14,7 @@ IceSDK::Memory::Ptr<bx::AllocatorI> GetAllocator();
 static void DeleteImageContainer(void *pPtr, void *pUserData)
 {
 	ICESDK_PROFILE_FUNCTION();
-	BX_UNUSED(pPtr);
+	BX_UNUSED(pPtr)
 	auto *const imageContainer = static_cast<bimg::ImageContainer *>(pUserData);
 	bimg::imageFree(imageContainer);
 }
