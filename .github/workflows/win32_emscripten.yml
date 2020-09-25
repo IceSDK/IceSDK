@@ -15,13 +15,15 @@ jobs:
 
       - name: Install Required Toolchain
         run: |
-          .\third-party\emsdk\emsdk.ps1 install latest
-          .\third-party\emsdk\emsdk.ps1 activate latest
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git
+          
+          .\emsdk\emsdk.ps1 install latest
+          .\emsdk\emsdk.ps1 activate latest
         shell: pwsh
 
       - name: Generate Build Files
         run: |
-          .\third-party\emsdk\emsdk_env.ps1
+          .\emsdk\emsdk_env.ps1
 
           mkdir .\out\
           Copy-Item .\.github\emscripten\args.gn -Destination .\out\args.gn
@@ -31,6 +33,6 @@ jobs:
 
       - name: Build BareBones
         run: |
-          .\third-party\emsdk\emsdk_env.ps1
+          .\emsdk\emsdk_env.ps1
           .\tools\win\ninja.exe -C out BareBones
         shell: pwsh

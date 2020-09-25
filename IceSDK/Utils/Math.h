@@ -40,12 +40,18 @@ namespace IceSDK::Math
 
         glm::vec2 Position()
         {
-            return {X(), Y()};
+            return
+            {
+                X(), Y()
+            }
         }
 
         glm::vec2 Size()
         {
-            return {Width(), Height()};
+            return
+            {
+                Width(), Height()
+            }
         }
 
         T length()

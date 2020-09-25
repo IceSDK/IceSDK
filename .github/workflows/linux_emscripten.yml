@@ -18,12 +18,14 @@ jobs:
           sudo apt update
           sudo apt install -y python3 python3-pip python-is-python3 libglfw3
 
-          ./third-party/emsdk/emsdk install latest
-          ./third-party/emsdk/emsdk activate latest
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git
+          
+          ./emsdk/emsdk install latest
+          ./emsdk/emsdk activate latest
 
       - name: Generate Build Files
         run: |
-          source ./third-party/emsdk/emsdk_env.sh
+          source ./emsdk/emsdk_env.sh
 
           mkdir ./out/
           cp ./.github/emscripten/args.gn ./out/args.gn
@@ -34,6 +36,6 @@ jobs:
 
       - name: Build BareBones
         run: |
-          source ./third-party/emsdk/emsdk_env.sh
+          source ./emsdk/emsdk_env.sh
 
           ./tools/linux/ninja -C out BareBones
