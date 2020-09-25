@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  BareBones:
+  IceSDK:
     runs-on: ubuntu-20.04
 
     steps:
@@ -23,33 +23,13 @@ jobs:
           chmod +x ./tools/linux/gn
           ./tools/linux/gn gen out
 
-      - name: Build BareBones
+      - name: Build IceSDK
         run: |
           chmod +x ./tools/linux/ninja
-          ./tools/linux/ninja -C out BareBones
-  
-  TestIceSDK:
-    runs-on: ubuntu-20.04
+          ./tools/linux/ninja -C out
 
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install Required Packages
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential git libglfw3-dev libfreetype-dev
-
-      - name: Generate Build Files
-        run: |
-          chmod +x ./tools/linux/gn
-          ./tools/linux/gn gen out
-
-      - name: Build TestIceSDK
-        run: |
-          chmod +x ./tools/linux/ninja
-          ./tools/linux/ninja -C out TestIceSDK
-      
       - name: Execute Tests
         run: |
           cd out
           ./TestIceSDK
+  

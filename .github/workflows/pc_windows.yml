@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  BareBones:
+  IceSDK:
     runs-on: windows-latest
 
     steps:
@@ -16,20 +16,8 @@ jobs:
       - name: Generate Build Files
         run: .\tools\win\gn.exe gen out
 
-      - name: Build BareBones
-        run: .\tools\win\ninja.exe -C out BareBones
-  
-  TestIceSDK:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Generate Build Files
-        run: .\tools\win\gn.exe gen out
-
-      - name: Build TestIceSDK
-        run: .\tools\win\ninja.exe -C out TestIceSDK
+      - name: Build IceSDK
+        run: .\tools\win\ninja.exe -C out
       
       - name: Execute Tests
         run: |
