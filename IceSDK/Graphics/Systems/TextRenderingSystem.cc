@@ -28,13 +28,12 @@ namespace HBFeature
     const hb_tag_t KernTag = HB_TAG('k', 'e', 'r', 'n'); // kerning operations
     const hb_tag_t LigaTag = HB_TAG('l', 'i', 'g', 'a'); // standard ligature substitution
     const hb_tag_t CligTag = HB_TAG('c', 'l', 'i', 'g'); // contextual ligature substitution
+    const hb_tag_t BaseTag = HB_TAG('b', 'a', 's', 'e'); // baseline
 
-    static hb_feature_t LigatureOff = {LigaTag, 0, 0, std::numeric_limits<unsigned int>::max()};
     static hb_feature_t LigatureOn = {LigaTag, 1, 0, std::numeric_limits<unsigned int>::max()};
-    static hb_feature_t KerningOff = {KernTag, 0, 0, std::numeric_limits<unsigned int>::max()};
     static hb_feature_t KerningOn = {KernTag, 1, 0, std::numeric_limits<unsigned int>::max()};
-    static hb_feature_t CligOff = {CligTag, 0, 0, std::numeric_limits<unsigned int>::max()};
     static hb_feature_t CligOn = {CligTag, 1, 0, std::numeric_limits<unsigned int>::max()};
+    static hb_feature_t BaseLineOn = {BaseTag, 1, 0, std::numeric_limits<unsigned int>::max()};
 } // namespace HBFeature
 
 void TextRenderingSystem::Tick(float pDelta)
@@ -62,8 +61,7 @@ void TextRenderingSystem::Draw(float pDelta)
         {
             auto fontManager = GetGameBase()->GetFontManager();
 
-            // HarfBuzz
-            auto [glyph, atlas, fontFace] = fontManager->GetGlyph(text.font_face_handle, text.text[0], text.font_size);
+            auto [_, fontFace] = fontManager->GetGlyph(text.font_face_handle, text.text[0], text.font_size);
 
             auto buffer = fontFace->_hb_buffer();
             auto font = fontFace->_hb_font();
@@ -81,6 +79,7 @@ void TextRenderingSystem::Draw(float pDelta)
             features.push_back(HBFeature::KerningOn);
             features.push_back(HBFeature::LigatureOn);
             features.push_back(HBFeature::CligOn);
+            features.push_back(HBFeature::BaseLineOn);
 
             hb_shape(font, buffer, &features[0], features.size());
 
@@ -88,77 +87,51 @@ void TextRenderingSystem::Draw(float pDelta)
             hb_glyph_info_t *glyphInfos = hb_buffer_get_glyph_infos(buffer, &glyphCount);
             hb_glyph_position_t *glyphPositions = hb_buffer_get_glyph_positions(buffer, &glyphCount);
 
-            glm::vec2 resolution{};
-            float baseLine = 0;
-            for (size_t i = 0; i < glyphCount; i++)
+            // Calculate text size
+            glm::vec2 textSize{};
+            float highestBearing = 0;
+
+            for (int i = 0; i < glyphCount; ++i)
             {
                 auto glyphInfo = glyphInfos[i];
                 auto glyphPos = glyphPositions[i];
 
-                auto xAdvance = glyphPos.x_advance / 64;
-                auto yAdvance = glyphPos.y_advance / 64;
+                auto [glyph, fontFace] = fontManager->GetGlyph(text.font_face_handle, glyphInfo.codepoint, text.font_size);
 
-                auto [glyph, atlas, fontFace] = fontManager->GetGlyph(text.font_face_handle, glyphInfo.codepoint, text.font_size);
+                highestBearing = Math::Max(highestBearing, glyph.BearingBase);
 
-                baseLine = Math::Max(baseLine, glyph.descent);        // Lowest low
-                resolution.y = Math::Max(resolution.y, glyph.ascent); // Highest Height
+                int twidth = pow(2, ceil(log(glyph.Size.x) / log(2)));
+                int theight = pow(2, ceil(log(glyph.Size.y) / log(2)));
 
-                baseLine = Math::Max(baseLine, glyph.descent);
-
-                uint32_t lastChar = 0;
-                if (lastChar >= 1)
-                    lastChar = glyphInfos[i - 1].codepoint;
-                if ((xAdvance) < (glyph.Size.x))
-                    resolution.x += (glyph.Size.x);
-                else
-                    resolution.x += (xAdvance);
+                textSize.x += twidth;
+                textSize.y = Math::Max(textSize.y, theight);
             }
 
-            // Create a Text Sprite
-            sprite.size = resolution;
-            sprite.texture = Texture2D::Create("Text: " + text.text, resolution.x, resolution.y, bgfx::TextureFormat::RGBA8);
+            auto texture = Texture2D::Create("SpriteText: " + text.text, textSize.x, textSize.y, bgfx::TextureFormat::RGBA8);
 
-            int xPen = 0;
-            int yPen = 0;
-
-            // Draw glyphs
-            for (size_t i = 0; i < glyphCount; i++)
+            // Render text
+            glm::vec2 pen{};
+            for (int i = 0; i < glyphCount; ++i)
             {
                 auto glyphInfo = glyphInfos[i];
                 auto glyphPos = glyphPositions[i];
+                glm::vec2 glyphOffset = {glyphPos.x_offset / 64, glyphPos.y_offset / 64};
 
-                auto xAdvance = glyphPos.x_advance / 64;
-                auto yAdvance = glyphPos.y_advance / 64;
+                auto [glyph, fontFace] = fontManager->GetGlyph(text.font_face_handle, glyphInfo.codepoint, text.font_size);
 
-                auto xOffset = glyphPos.x_offset / 64;
-                auto yOffset = glyphPos.y_offset / 64;
+                auto baseLine = highestBearing - glyph.GlyphTop;
 
-                auto [glyph, atlas, fontFace] = fontManager->GetGlyph(text.font_face_handle, glyphInfo.codepoint, text.font_size);
+                auto targetPos = pen - glyphOffset;
+                targetPos.y = baseLine;
 
-                yPen = sprite.size.y - glyph.ascent - baseLine;
-                // TODO: GPU acceleration using an shader and it's font atlas...
-                {
-                    const bgfx::Memory *memory = bgfx::alloc(glyph.PixelData.size() * 4);
-                    bx::memSet(memory->data, 0, memory->size);
-                    for (size_t i = 0; i < glyph.PixelData.size(); i++)
-                    {
-                        auto pixel = glyph.PixelData.at(i);
+                texture->Modify({targetPos, glyph.Size}, glyph.PixelData, bgfx::TextureFormat::RGBA8);
 
-                        uint8_t r = (pixel.a * 0xFF), g = (pixel.a * 0xFF), b = (pixel.a * 0xFF), a = (pixel.a * 0xFF);
-
-                        auto pixel_value = ((r & 0xFF) << 24) | ((g & 0xFF) << 16) | ((b & 0xFF) << 8) | (a & 0xFF);
-
-                        bx::memCopy(&memory->data[i * 4], (void *)&pixel_value, 4);
-                    }
-
-                    bgfx::updateTexture2D(sprite.texture->GetHandle(), 0, 0,
-                                          floor(xPen + xOffset), floor(yPen + yOffset + baseLine), glyph.Size.x, glyph.Size.y,
-                                          memory, glyph.Size.x * 4);
-                }
-                // TODO end
-
-                xPen += xAdvance;
+                pen.x += glyphPos.x_advance / 64;
+                pen.y += glyphPos.y_advance / 64;
             }
+
+            sprite.size = textSize;
+            sprite.texture = texture;
 
             text._old_text = String::CalculateHash(text.text) + text.font_size;
         }

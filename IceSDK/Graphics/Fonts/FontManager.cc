@@ -8,38 +8,30 @@
 using namespace IceSDK;
 using namespace IceSDK::Graphics;
 
-std::tuple<Glyph, Memory::Ptr<Texture2D>, Memory::Ptr<FontFace>> FontManager::GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize)
+std::tuple<Glyph, Memory::Ptr<FontFace>> FontManager::GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize)
 {
     if (pFont == INVALID_FONT_FACE_HANDLE)
         ICESDK_CORE_CRITICAL("Passed FontFaceHandle is invalid! f: {} g: {} s: {}", pFont, pGlyph, pSize);
 
     auto fontFaces = this->_faces[pFont];
 
-    bool foundFace = false;
     for (auto &&face : fontFaces)
     {
         if (face->GetSize() == pSize)
         {
             auto glyph = face->GetGlyph(pGlyph);
 
-            foundFace = true;
-
-            return {glyph, face->GetAtlas(glyph.AtlasIndex), face};
+            return {glyph, face};
         }
     }
 
-    if (!foundFace)
-    {
-        auto face = FontFace::FromMemory(this->_faces_buffer[pFont], pSize);
-        auto fontBuffer = this->_faces[pFont];
-        fontBuffer.push_back(face);
+    auto face = FontFace::FromMemory(this->_faces_buffer[pFont], pSize);
+    auto fontBuffer = this->_faces[pFont];
+    fontBuffer.push_back(face);
 
-        auto glyph = face->GetGlyph(pGlyph);
+    auto glyph = face->GetGlyph(pGlyph);
 
-        return {glyph, face->GetAtlas(glyph.AtlasIndex), face};
-    }
-
-    return {{}, nullptr, nullptr};
+    return {glyph, face};
 }
 
 FontFaceHandle FontManager::LoadFont(const std::string &pPath)

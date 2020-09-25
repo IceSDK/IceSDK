@@ -24,14 +24,13 @@ protected:
 		Graphics::Entity::InitScene(this->_active_scene);
 
 		_fontHandle = GetFontManager()->LoadFont("./Roboto-Regular.ttf");
-		ICESDK_TRACE("{}", _fontHandle);
 		if (_fontHandle == INVALID_FONT_FACE_HANDLE)
 		{
 			ICESDK_CRITICAL("Failed to initialize FontFace!");
 			return;
 		}
 
-		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Hello World!", 32, _fontHandle);
+		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Mempler", 16, _fontHandle);
 	}
 
 	void Draw(float pDelta) override

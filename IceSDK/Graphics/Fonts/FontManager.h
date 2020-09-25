@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Graphics/Fonts/FontAtlas.h"
 #include "Graphics/Fonts/FontFace.h"
 
 #define INVALID_FONT_FACE_HANDLE -1
@@ -12,7 +11,7 @@ namespace IceSDK::Graphics
     class FontManager
     {
     public:
-        std::tuple<Glyph, Memory::Ptr<Texture2D>, Memory::Ptr<FontFace>> GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize);
+        std::tuple<Glyph, Memory::Ptr<FontFace>> GetGlyph(FontFaceHandle pFont, uint32_t pGlyph, size_t pSize);
 
         FontFaceHandle LoadFont(std::vector<uint8_t> pBuffer);
         FontFaceHandle LoadFont(const std::string &pPath);

@@ -1,15 +1,27 @@
 #pragma once
 
-#include "FontAtlas.h"
 #include "Graphics/Texture2D.h"
 
 #include "hb.hh"
 #include "hb-ft.h"
 
+#include "glm/vec2.hpp"
+
+#include <vector>
+
 #undef getenv // Harfbuzz sets this but it's incompatible with spdlog
 
 namespace IceSDK::Graphics
 {
+    struct Glyph
+    {
+        glm::vec2 Size; // Bottom && Right
+        float BearingBase;
+        float GlyphTop;
+
+        std::vector<uint8_t> PixelData;
+    };
+
     class FontFace
     {
     public:
@@ -27,17 +39,11 @@ namespace IceSDK::Graphics
         // NOTE: This will clear the whole cache
         // and all it's font atlasses! it'll slow down
         // on the first render
-        void SetSize(size_t size);
+        void SetSize(size_t pSize);
         size_t GetSize();
 
         // Load a single character to a font atlas
-        void LoadGlyph(uint32_t glyph);
-
-        float GetKerningOffset(uint32_t pGlyph, uint32_t pPreviousGlyph);
-
-        Glyph &GetGlyph(uint32_t glyph);
-
-        Memory::Ptr<Texture2D> GetAtlas(size_t index);
+        Glyph &GetGlyph(uint32_t pGlyph);
 
         hb_buffer_t *_hb_buffer()
         {
@@ -55,6 +61,6 @@ namespace IceSDK::Graphics
         FT_Face _face;
         size_t _size;
 
-        std::vector<FontAtlas> _font_atlases{};
+        std::unordered_map<uint32_t, Glyph> _glyphCache;
     };
 } // namespace IceSDK::Graphics

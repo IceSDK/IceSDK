@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Utils/Memory.h"
+#include "Utils/Math.h"
 
 #include "bgfx/bgfx.h"
 #include "bx/allocator.h"
@@ -28,6 +29,8 @@ namespace IceSDK::Graphics
 
 		uint32_t Width() const { return _width; }
 		uint32_t Height() const { return _height; }
+
+		void Modify(Math::Rectf pRect, const std::vector<uint8_t> &pBuffer, bgfx::TextureFormat::Enum pTexFormat);
 
 		bgfx::TextureHandle GetHandle() const;
 		bgfx::TextureHandle *GetHandlePtr();

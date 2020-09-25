@@ -4,6 +4,7 @@
 
 #include "Utils/FileSystem.h"
 #include "Utils/Instrumentor.h"
+#include "Utils/Logger.h"
 
 using namespace IceSDK;
 using namespace IceSDK::Graphics;
@@ -118,6 +119,39 @@ Memory::Ptr<Texture2D> Texture2D::Create(const std::string &pName, const size_t 
 	bgfx::setName(tex2D->_inner, pName.c_str(), static_cast<uint32_t>(pName.length()));
 
 	return tex2D;
+}
+
+void Texture2D::Modify(Math::Rectf pRect, const std::vector<uint8_t> &pBuffer, bgfx::TextureFormat::Enum pTexFormat)
+{
+	if (pBuffer.empty() || pRect.right == 0 || pRect.bottom == 0)
+		return;
+
+	ICESDK_PROFILE_FUNCTION();
+
+	auto memory = bgfx::copy(pBuffer.data(), pBuffer.size());
+
+	// Hack for figuring out our _pitch
+	size_t pitch = 0;
+	switch (pTexFormat)
+	{
+	case bgfx::TextureFormat::R8:
+		pitch = 1;
+		break;
+	case bgfx::TextureFormat::RG8:
+		pitch = 2;
+		break;
+	case bgfx::TextureFormat::RGB8:
+		pitch = 3;
+		break;
+	case bgfx::TextureFormat::RGBA8:
+		pitch = 4;
+		break;
+	}
+
+	bgfx::updateTexture2D(this->_inner, 0, 0,
+						  pRect.X(), pRect.Y(),
+						  pRect.Width(), pRect.Height(),
+						  memory, pRect.Width() * pitch);
 }
 
 bgfx::TextureHandle Texture2D::GetHandle() const
