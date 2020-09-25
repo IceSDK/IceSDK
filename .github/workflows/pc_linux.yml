@@ -22,7 +22,7 @@ jobs:
         id: cache
         with:
           path: /tmp/ccache
-          key: ${{ runner.os }}-${{ hashFiles('**/BUILD.gn') }}
+          key: ${{ runner.os }}-emscripten-${{ hashFiles('**/*.manifest') }}
 
       - name: Generate Build Files
         run: |
