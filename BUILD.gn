@@ -4,7 +4,10 @@ group("root") {
 
         "//Examples",
         "//Tests",
-        "//Benchmarks",
         "//tools/sources:Tools",
     ]
+
+    if (!is_debug && !is_official_build) {
+        deps += [ "//Benchmarks" ]
+    }
 }
