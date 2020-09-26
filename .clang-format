@@ -147,6 +147,63 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Libraries with Directories
+  - Regex:           '<.*\/.*\.(h.*)'
+    Priority:        50
+    SortPriority:    50
+
+  # Libraries
+  - Regex:           '^<.*\.(h.*)'
+    Priority:        500
+    SortPriority:    500
+  
+  # Standard Libraries
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        5000
+    SortPriority:    5000
+
+  # Precompiled Headers
+  - Regex:           '^<|"(pch|stdafx)'
+    Priority:        -1
+    SortPriority:    -1
+
+  # IceSDK
+  - Regex:           '^"[Assets\/].*'
+    Priority:        1
+    SortPriority:    1
+
+  - Regex:           '^"[Audio\/].*'
+    Priority:        2
+    SortPriority:    2
+
+  - Regex:           '^"[ECS\/].*'
+    Priority:        3
+    SortPriority:    3
+
+  - Regex:           '^"[Graphics\/].*'
+    Priority:        4
+    SortPriority:    4
+
+  - Regex:           '^"[Utils\/].*'
+    Priority:        5
+    SortPriority:    5
+
+  - Regex:           '^"[Input\/].*'
+    Priority:        6
+    SortPriority:    6
+
+  - Regex:           '^"[Physics\/].*'
+    Priority:        7
+    SortPriority:    7
+
+  - Regex:           '^".*'
+    Priority:        8
+    SortPriority:    8
+
+
 
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
@@ -158,7 +215,6 @@ CompactNamespaces: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 Cpp11BracedListStyle: false
 FixNamespaceComments: true
-IncludeBlocks: Regroup
 IndentCaseLabels: false
 IndentGotoLabels: false
 IndentPPDirectives: BeforeHash
@@ -166,7 +222,6 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
 PointerAlignment: Left
-SortIncludes: true
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false
