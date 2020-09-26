@@ -1,7 +1,5 @@
 #include "pch.h"
 
-#include "Physics/EntityHelper.h"
-
 #include "ECS/Components/BaseComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Scene.h"
@@ -10,6 +8,7 @@
 
 #include "Graphics/Components/SpriteComponent.h"
 #include "Physics/Components/RigidbodyComponent.h"
+#include "Physics/EntityHelper.h"
 #include "Physics/Systems/PhysicsSystem.h"
 
 using namespace IceSDK;
@@ -21,21 +20,21 @@ void IceSDK::Physics::Entity::AttachPhysicsObject(
 {
     auto& transform =
         target.GetComponent<IceSDK::Components::TransformComponent>();
-    auto& sprite = target.GetComponent<
-        Graphics::Components::SpriteComponent>();  // TODO - we are using that
-                                                   // to get size.
 
     IceSDK::Components::RigidbodyComponent phys_comp;
     phys_comp.body_def.type = b2_dynamicBody;
+    phys_comp.body_def.angle = glm::radians(transform.rotation);
     phys_comp.body_def.position =
         b2Vec2(transform.position.x, transform.position.y);
     phys_comp.body = pScene->GetWorld()->CreateBody(&phys_comp.body_def);
-    phys_comp.shape.SetAsBox(sprite.size.x, sprite.size.y);
+
+    // TODO
+    phys_comp.shape.SetAsBox(transform.scale.x, transform.scale.y);
 
     b2FixtureDef
         fixtureDef;  // TODO - make these settings are editable (by scene)
     fixtureDef.density = 1.0f;
-    fixtureDef.friction = 2.0f;
+    fixtureDef.friction = 0.5f;
     fixtureDef.restitution = 0.5f;
 
     fixtureDef.shape = &phys_comp.shape;
@@ -50,15 +49,17 @@ void IceSDK::Physics::Entity::AttachSolidPhysicsObject(
 {
     auto& transform =
         target.GetComponent<IceSDK::Components::TransformComponent>();
-    auto& sprite = target.GetComponent<
-        Graphics::Components::SpriteComponent>();  // TODO - we are using that
-                                                   // to get size.
 
     IceSDK::Components::RigidbodyComponent phys_comp;
+    phys_comp.body_def.type = b2_staticBody;
+    phys_comp.body_def.angle = glm::radians(transform.rotation);
+
     phys_comp.body_def.position =
         b2Vec2(transform.position.x, transform.position.y);
     phys_comp.body = pScene->GetWorld()->CreateBody(&phys_comp.body_def);
-    phys_comp.shape.SetAsBox(sprite.size.x, sprite.size.y);
+
+    // TODO
+    phys_comp.shape.SetAsBox(transform.scale.x, transform.scale.y);
 
     phys_comp.body->CreateFixture(&phys_comp.shape, 0.f);
 

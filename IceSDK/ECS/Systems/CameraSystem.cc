@@ -7,6 +7,7 @@
 #include "ECS/Entity.h"
 
 #include "GameBase.h"
+#include <bx\math.h>
 
 
 using namespace IceSDK;

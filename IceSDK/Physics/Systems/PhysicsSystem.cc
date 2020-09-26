@@ -41,5 +41,6 @@ void PhysicsSystem::Tick(float timeStep)
         auto& transform = physicsEntity.GetComponent<TransformComponent>();
         transform.position.y = rigidbody.body->GetPosition().y;
         transform.position.x = rigidbody.body->GetPosition().x;
+        transform.rotation = glm::degrees(rigidbody.body->GetAngle());
     }
 }

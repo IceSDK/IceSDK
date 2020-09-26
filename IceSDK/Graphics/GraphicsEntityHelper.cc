@@ -64,14 +64,21 @@ IceSDK::Entity Graphics::Entity::CreateSprite(
     Memory::Ptr<IceSDK::Scene> pScene,
     Memory::Ptr<Shaders::ShaderManager> pShaderManager,
     Memory::Ptr<Texture2D> pTex, const glm::vec3& position,
-    const glm::vec2& size)
+    const glm::vec2& size, float rotation)
 {
     ICESDK_PROFILE_FUNCTION();
 
     auto entity = pScene->CreateEntity("Sprite");
 
+    glm::vec2 TexSize{ 0 };
+    if (size.x != -1.f && size.y != -1.f)
+        TexSize = size;
+    else if (pTex != nullptr)
+        TexSize = { pTex->Width(), pTex->Height() };
+
     entity.AddComponent<IceSDK::Components::TransformComponent>(
-        position, glm::vec3{ 1.0f, 1.0f, 1.0f });
+        position, glm::vec3{ TexSize.x, TexSize.y, 1.0f }, rotation);
+
     entity.AddComponent<Graphics::Components::MeshComponent>(
         bgfx::createVertexBuffer(
             bgfx::makeRef(g_SpriteVertices, sizeof g_SpriteVertices),
@@ -81,12 +88,6 @@ IceSDK::Entity Graphics::Entity::CreateSprite(
 
     entity.AddComponent<Graphics::Components::ShaderComponent>(
         pShaderManager.get()->LoadProgram("Sprite"));
-
-    glm::vec2 TexSize{ 0 };
-    if (size.x != -1.f && size.y != -1.f)
-        TexSize = size;
-    else if (pTex != nullptr)
-        TexSize = { pTex->Width(), pTex->Height() };
 
     entity.AddComponent<Graphics::Components::SpriteComponent>(TexSize, pTex);
 
