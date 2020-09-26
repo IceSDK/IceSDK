@@ -32,6 +32,10 @@ namespace IceSDK::Input
             return this->_keyboard_state;
         }
 
+#if defined(ICESDK_SDL2)
+        void PumpSDL2Event(SDL_Event& pEvent);
+#endif
+
     private:
         glm::vec2 _mouse_scroll_axis;
         glm::vec2 _mouse_move_delta;
@@ -42,10 +46,8 @@ namespace IceSDK::Input
         std::unordered_map<KeyboardTable, ButtonState> _keyboard_state;
 
 #if defined(ICESDK_GLFW)
-        static void InputPipeline::MouseButtonCallback(GLFWwindow* pWnd,
-                                                       int pButton,
-                                                       int pButtonState,
-                                                       int pMods);
+        static void MouseButtonCallback(GLFWwindow* pWnd, int pButton,
+                                        int pButtonState, int pMods);
         static void CursorCallback(GLFWwindow* pWnd, double pX, double pY);
         static void ScrollCallback(GLFWwindow* pWnd, double pX, double pY);
         static void KeybrdCallback(GLFWwindow* pWnd, int pKey, int pScanCode,

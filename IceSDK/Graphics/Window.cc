@@ -5,6 +5,8 @@
 #include "Utils/Instrumentor.h"
 #include "Utils/Logger.h"
 
+#include "GameBase.h"
+
 using namespace IceSDK::Graphics;
 
 #ifdef ICESDK_GLFW
@@ -173,6 +175,8 @@ void GameWindow::Update()
                 bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
             }
         }
+
+        GetGameBase()->GetInputPipeline()->PumpSDL2Event(e);
     }
 #endif
 

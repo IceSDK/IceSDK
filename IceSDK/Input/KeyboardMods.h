@@ -2,8 +2,9 @@
 
 namespace IceSDK::Input
 {
-    enum class KeyboardMods
+    enum KeyboardMods : uint8_t
     {
+        None = 0,
         SHIFT = 1 << 0,
         CONTROL = 1 << 1,
         ALT = 1 << 2,
