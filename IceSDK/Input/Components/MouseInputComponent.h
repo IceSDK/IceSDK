@@ -14,15 +14,15 @@ namespace IceSDK::Input::Components
         glm::vec2 ScrollAxis;
         glm::vec2 Position;
 
-        std::unordered_map<MouseTable, ButtonState> ButtonState;
+        std::unordered_map<MouseTable, ButtonState> MouseButtonState;
 
         bool IsPressed(MouseTable pBtn)
         {
-            return this->ButtonState.at(pBtn) == ButtonState::Pressed;
+            return this->MouseButtonState.at(pBtn) == ButtonState::Pressed;
         }
         bool IsReleased(MouseTable pBtn)
         {
-            return this->ButtonState.at(pBtn) == ButtonState::Released;
+            return this->MouseButtonState.at(pBtn) == ButtonState::Released;
         }
     };
 }  // namespace IceSDK::Input::Components

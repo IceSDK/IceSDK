@@ -36,7 +36,7 @@ void MouseInputSystem::Tick(float pDelta)
 
         mouse.Position = Position;
         mouse.ScrollAxis = Axis;
-        mouse.ButtonState = inputPipeline->GetMouseButtonState();
+        mouse.MouseButtonState = inputPipeline->GetMouseButtonState();
     }
 }
 
