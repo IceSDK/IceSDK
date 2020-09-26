@@ -26,13 +26,14 @@ void MouseInputSystem::Tick(float pDelta)
     // Calculate Delta
     glm::vec2 Position = inputPipeline->GetMousePosition();
 
-    auto mouseInputGroup = registry->view<Components::MouseInputComponent>();
+    auto mouseInputGroup =
+        registry->view<Input::Components::MouseInputComponent>();
     for (auto rawMouseInputEntity : mouseInputGroup)
     {
         auto mouseEntity = Entity(this->_registry, rawMouseInputEntity);
 
         auto& mouse =
-            mouseEntity.GetComponent<Components::MouseInputComponent>();
+            mouseEntity.GetComponent<Input::Components::MouseInputComponent>();
 
         mouse.Position = Position;
         mouse.ScrollAxis = Axis;

@@ -224,7 +224,7 @@ void GameBase::InternalDrawInit()
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
 
-#if ICESDK_ANDROID
+#ifdef ICESDK_ANDROID
     io.ConfigFlags |= ImGuiConfigFlags_IsTouchScreen;  // Enable Touch
     io.FontGlobalScale = 3.0f;
 #endif

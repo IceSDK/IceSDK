@@ -142,9 +142,9 @@ void InputPipeline::PumpSDL2Event(SDL_Event& pEvent)
 
 void InputPipeline::Init()
 {
+#if defined(ICESDK_GLFW)
     auto nativeWindow = GetWindow()->GetNativeWindow();
 
-#if defined(ICESDK_GLFW)
     glfwSetInputMode(nativeWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     glfwSetMouseButtonCallback(nativeWindow,
@@ -157,9 +157,9 @@ void InputPipeline::Init()
 
 InputPipeline::~InputPipeline()
 {
+#if defined(ICESDK_GLFW)
     auto nativeWindow = GetWindow()->GetNativeWindow();
 
-#if defined(ICESDK_GLFW)
     if (nativeWindow != nullptr)
     {
         glfwSetCursorPosCallback(nativeWindow, NULL);

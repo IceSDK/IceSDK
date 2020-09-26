@@ -22,13 +22,14 @@ void KeyboardInputSystem::Tick(float pDelta)
     auto inputPipeline = GetGameBase()->GetInputPipeline();
 
     auto keyboardInputGroup =
-        registry->view<Components::KeyboardInputComponent>();
+        registry->view<Input::Components::KeyboardInputComponent>();
     for (auto rawKeyboardInputEntity : keyboardInputGroup)
     {
         auto keyboardEntity = Entity(this->_registry, rawKeyboardInputEntity);
 
         auto& keyboard =
-            keyboardEntity.GetComponent<Components::KeyboardInputComponent>();
+            keyboardEntity
+                .GetComponent<Input::Components::KeyboardInputComponent>();
 
         keyboard.Mods = inputPipeline->GetKeyboardMods();
         keyboard.KeyboardState = inputPipeline->GetKeyboardButtonState();
