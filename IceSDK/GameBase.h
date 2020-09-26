@@ -10,6 +10,8 @@
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Fonts/FontManager.h"
 
+#include "Physics/PhysicsSystem.h"
+
 namespace IceSDK
 {
 	class GameBase

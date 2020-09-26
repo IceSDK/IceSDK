@@ -16,33 +16,37 @@ protected:
 	void Init() override
 	{
 		this->_active_scene = std::make_shared<Scene>();
+		this->_active_scene->SetGravity({ 0, -10.f });
 	}
 
 	void InitDraw() override
 	{
 		Graphics::Entity::Init(this->GetShaderManager());
 		Graphics::Entity::InitScene(this->_active_scene);
+		this->_active_scene->SetGravity({ 0, 2.f });
 
-		_fontHandle = GetFontManager()->LoadFont("./Roboto-Regular.ttf");
-		if (_fontHandle == INVALID_FONT_FACE_HANDLE)
-		{
-			ICESDK_CRITICAL("Failed to initialize FontFace!");
-			return;
-		}
+		_texture = this->GetAssetManager()->LoadTexture("/Assets/Box.png");
+		_texture2 = this->GetAssetManager()->LoadTexture("/Assets/Ground.png");
 
-		_font = Graphics::Entity::CreateText(this->_active_scene, this->GetShaderManager(), "Mempler", 16, _fontHandle);
+		_gravity_entity = Graphics::Entity::CreateSprite(this->_active_scene, this->GetShaderManager(), _texture, { 50, 0, 0 }, { 50, 50 });
+		_solid_entity = Graphics::Entity::CreateSprite(this->_active_scene, this->GetShaderManager(), _texture2, { 120, 250, 0 }, { 500, 50 });
+
+		Graphics::Entity::AttachPhysicsObject(this->_active_scene, _gravity_entity); // TODO - change the namespace name "Graphics::"
+		Graphics::Entity::AttachSolidPhysicsObject(this->_active_scene, _solid_entity); // TODO - change the namespace name "Graphics::"
+
 	}
 
 	void Draw(float pDelta) override
 	{
-		// ImGuiWidgets::AssetBrowser::Frame(this->GetAssetManager());
 		ImGuiWidgets::SceneGraph::Frame(this->GetActiveScene());
 	}
 
 private:
 	Graphics::FontFaceHandle _fontHandle;
-
-	Entity _font;
+	Memory::Ptr<Graphics::Texture2D> _texture;
+	Memory::Ptr<Graphics::Texture2D> _texture2;
+	Entity _gravity_entity;
+	Entity _solid_entity;
 };
 
 Memory::Ptr<Game> g_Game;

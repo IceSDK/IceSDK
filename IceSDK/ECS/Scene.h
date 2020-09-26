@@ -4,6 +4,10 @@
 #include "ECS/Entity.h"
 #include "ECS/System.h"
 
+#include <box2d/box2d.h>
+
+#define PHYSICS_SPEED 1.f / 60.f
+
 namespace IceSDK
 {
 	class Scene final
@@ -11,7 +15,7 @@ namespace IceSDK
 	public:
 		explicit Scene();
 
-		Entity CreateEntity(const std::string &pName) const;
+		Entity CreateEntity(const std::string& pName) const;
 
 		template <typename Sys>
 		void RegisterSystem()
@@ -27,9 +31,16 @@ namespace IceSDK
 
 		Memory::WeakPtr<entt::registry> GetRegistry();
 
+		b2World *GetWorld();
+		b2Vec2 GetGravity() const;
+		void SetGravity(const b2Vec2& gravity);
+
 	private:
 		std::vector<Memory::Ptr<System>> _systems;
 
 		Memory::Ptr<entt::registry> _registry;
+
+		b2Vec2 _gravity;
+		b2World *_world;
 	};
 } // namespace IceSDK
