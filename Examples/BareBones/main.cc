@@ -1,11 +1,10 @@
-#include "GameBase.h"
+#include "Utils/Logger.h"
 #include "imgui.h"
 
-#include "Graphics/Fonts/FontFace.h"
+#include "GameBase.h"
 #include "Graphics/EntityHelper.h"
+#include "Graphics/Fonts/FontFace.h"
 #include "Graphics/ImGui/Widgets/SceneGraph.h"
-
-#include "Utils/Logger.h"
 
 using namespace IceSDK;
 
@@ -54,17 +53,17 @@ Memory::Ptr<IceSDK::GameBase> g_GameBase;
 
 int IceSDKMain()
 {
-	g_Game = std::make_shared<Game>();
-	g_GameBase = g_Game;
+    g_Game = std::make_shared<Game>();
+    g_GameBase = g_Game;
 
-	g_Game->Run();
+    g_Game->Run();
 
-	g_Game = nullptr;
-	g_GameBase = nullptr;
-	return 0;
+    g_Game = nullptr;
+    g_GameBase = nullptr;
+    return 0;
 }
 
 Memory::Ptr<GameBase> GetGameBase()
 {
-	return g_GameBase;
+    return g_GameBase;
 }

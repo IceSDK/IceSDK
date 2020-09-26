@@ -1,10 +1,10 @@
 #pragma once
 
-#include "glm/vec2.hpp"
+#include <glm/vec2.hpp>
 
 namespace IceSDK::Math
 {
-    template <typename T>
+    template<typename T>
     struct Rect
     {
         T top, bottom, left, right;
@@ -18,40 +18,19 @@ namespace IceSDK::Math
             right = pos.x + size.x;
         }
 
-        T Width()
-        {
-            return right - left;
-        }
+        T Width() { return right - left; }
 
-        T Height()
-        {
-            return bottom - top;
-        }
+        T Height() { return bottom - top; }
 
-        T X()
-        {
-            return left;
-        }
+        T X() { return left; }
 
-        T Y()
-        {
-            return top;
-        }
+        T Y() { return top; }
 
-        glm::vec2 Position()
-        {
-            return {X(), Y()};
-        }
+        glm::vec2 Position() { return { X(), Y() }; }
 
-        glm::vec2 Size()
-        {
-            return {Width(), Height()};
-        }
+        glm::vec2 Size() { return { Width(), Height() }; }
 
-        T length()
-        {
-            return (left - right) * (top - bottom);
-        }
+        T length() { return (left - right) * (top - bottom); }
     };
 
     typedef Rect<float> Rectf;
@@ -59,17 +38,15 @@ namespace IceSDK::Math
 
     inline float Max(float x, float y)
     {
-        if (x > y)
-            return x;
+        if (x > y) return x;
 
         return y;
     }
 
     inline float Min(float x, float y)
     {
-        if (x > y)
-            return y;
+        if (x > y) return y;
 
         return x;
     }
-} // namespace IceSDK::Math
+}  // namespace IceSDK::Math

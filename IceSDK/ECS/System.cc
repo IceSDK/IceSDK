@@ -4,7 +4,7 @@
 
 using namespace IceSDK;
 
-System::System(const Memory::WeakPtr<entt::registry> &pRegistry)
+System::System(const Memory::WeakPtr<entt::registry>& pRegistry)
 {
-	this->_registry = pRegistry;
+    this->_registry = pRegistry;
 }

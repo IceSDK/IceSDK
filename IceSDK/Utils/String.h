@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "Jenkins.h"
+
+#include <string>
 
 namespace IceSDK
 {
@@ -18,11 +18,9 @@ namespace IceSDK
 
         inline uint64_t CalculateHash(std::string input)
         {
-            if (input.empty())
-                return 0;
+            if (input.empty()) return 0;
 
-            while (input.length() % 4 != 0)
-                input += 0xEE;
+            while (input.length() % 4 != 0) input += 0xEE;
 
             uint32_t hash1 = 0;
             uint32_t hash2 = 0;
@@ -35,5 +33,5 @@ namespace IceSDK
 
             return hash;
         }
-    } // namespace String
-} // namespace IceSDK
+    }  // namespace String
+}  // namespace IceSDK

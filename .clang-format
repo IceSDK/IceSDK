@@ -1,0 +1,247 @@
+---
+BasedOnStyle: Google
+IndentWidth: 4
+---
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+#
+# someLongFunction(argument1,
+#                  argument2);
+#
+AlignAfterOpenBracket: Align
+
+#
+# #define A                                                                      \
+#   int aaaa;                                                                    \
+#   int b;                                                                       \
+#   int dddddddddd;
+#
+AlignEscapedNewlines: Right
+
+#
+# int aaa = bbbbbbbbbbbbbbb +
+#           ccccccccccccccc;
+#
+AlignOperands: true
+
+#
+# callFunction(
+#    a, b, c, d);
+#
+AllowAllArgumentsOnNextLine: true
+
+#
+# MyClass::MyClass() :
+#     member0(0), member1(2) {}
+#
+AllowAllConstructorInitializersOnNextLine: true
+
+#
+# void myFunction(
+#    int a, int b, int c, int d, int e);
+#
+AllowAllParametersOfDeclarationOnNextLine: true
+
+#
+# while (true) {}
+# while (true) { continue; }
+#
+AllowShortBlocksOnASingleLine: Always
+
+#
+# switch (a) {     
+# case 1: x = 1; break;
+# case 2: return;
+# }
+#
+AllowShortCaseLabelsOnASingleLine: true
+
+#
+# class Foo {
+#   void f() { foo(); }
+# };
+# void f() {
+#   foo();
+# }
+# void f() {}
+#
+AllowShortFunctionsOnASingleLine: Inline
+
+#
+# if (a) return;
+# else
+#   return;
+#
+AllowShortIfStatementsOnASingleLine: WithoutElse
+
+#
+# auto lambda = [](int a) {}
+# auto lambda2 = [](int a) { return a; };
+#
+AllowShortLambdasOnASingleLine: All
+
+#
+# class A {
+#   int f() { return 0; };
+# };
+# int f();
+# int f() { return 1; }
+#
+AlwaysBreakAfterReturnType: None
+
+#
+# aaaa = "bbbb"
+#        "cccc";
+#
+AlwaysBreakBeforeMultilineStrings: false
+
+#
+# template <typename T>
+# T foo() {
+# }
+# template <typename T>
+# T foo(int aaaaaaaaaaaaaaaaaaaaa,
+#       int bbbbbbbbbbbbbbbbbbbbb) {
+# }
+#
+AlwaysBreakTemplateDeclarations: Yes
+
+#
+# void f() {
+#   f(aaaaaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+# }
+#
+BinPackArguments: true
+
+#
+# class A
+# {
+# public:
+# private: 
+# }
+# struct B
+# { 
+# }
+# enum C
+# {
+# }
+#
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  AfterClass: true
+  AfterNamespace: true
+  AfterFunction: true
+  AfterCaseLabel: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Libraries with Directories
+  - Regex:           '<.*\/.*\.(h.*)'
+    Priority:        50
+    SortPriority:    50
+
+  # Libraries
+  - Regex:           '^<.*\.(h.*)'
+    Priority:        500
+    SortPriority:    500
+  
+  # Standard Libraries
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        5000
+    SortPriority:    5000
+
+  # Precompiled Headers
+  - Regex:           '^<|"(pch|stdafx)'
+    Priority:        -1
+    SortPriority:    -1
+
+  # IceSDK
+  - Regex:           '^"[Assets\/].*'
+    Priority:        1
+    SortPriority:    1
+
+  - Regex:           '^"[Audio\/].*'
+    Priority:        2
+    SortPriority:    2
+
+  - Regex:           '^"[ECS\/].*'
+    Priority:        3
+    SortPriority:    3
+
+  - Regex:           '^"[Graphics\/].*'
+    Priority:        4
+    SortPriority:    4
+
+  - Regex:           '^"[Utils\/].*'
+    Priority:        5
+    SortPriority:    5
+
+  - Regex:           '^"[Input\/].*'
+    Priority:        6
+    SortPriority:    6
+
+  - Regex:           '^"[Physics\/].*'
+    Priority:        7
+    SortPriority:    7
+
+  - Regex:           '^".*'
+    Priority:        8
+    SortPriority:    8
+
+
+
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: BeforeColon
+BreakStringLiterals: true
+CompactNamespaces: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+Cpp11BracedListStyle: false
+FixNamespaceComments: true
+IndentCaseLabels: false
+IndentGotoLabels: false
+IndentPPDirectives: BeforeHash
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+PointerAlignment: Left
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: true
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+Standard: Latest
+UseCRLF: false
+UseTab: Never
+AccessModifierOffset: -4
+---

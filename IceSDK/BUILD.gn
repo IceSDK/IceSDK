@@ -1,8 +1,10 @@
 import ("./IceSDK.gni") # Helper functions
 import ("//build/unity_build.gni") # Unity builds
 
-use_glfw = false
-use_sdl2 = false
+declare_args() {
+    use_glfw = true
+    use_sdl2 = false
+}
 
 unity_lib("IceSDK") {
     sources = [
@@ -52,6 +54,13 @@ unity_lib("IceSDK") {
         "Graphics/ImGui/bgfx_imgui.cc",
 #       "ImGui/Widgets/AssetBrowser.cc",
         "Graphics/ImGui/Widgets/SceneGraph.cc",
+
+        #######################################################
+        #                       Input                         #
+        #######################################################
+        "Input/InputPipeline.cc",
+        "Input/Systems/MouseInputSystem.cc",
+        "Input/Systems/KeyboardInputSystem.cc",
 
         #######################################################
         #                      Physics                        #
@@ -125,16 +134,17 @@ unity_lib("IceSDK") {
 
     if (is_win || is_linux || is_mac) {
         defines += [ "ICESDK_DESKTOP", "ICESDK_FMOD" ] # Which audio system to use. TODO: Add more audio systems
-        use_glfw = true
     }
 
     if (is_emscripten) {
         defines += [ "ICESDK_EMSCRIPTEN", "__EMSCRIPTEN__", "ICESDK_FMOD" ]
+        use_glfw = false
         use_sdl2 = true
     }
 
     if (is_android) {
         defines += [ "ICESDK_ANDROID" ]
+        use_glfw = false
         use_sdl2 = true
     }
 
