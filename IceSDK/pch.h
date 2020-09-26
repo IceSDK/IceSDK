@@ -82,6 +82,8 @@
 
 #include FT_FREETYPE_H
 
+#include <box2d/box2d.h>
+
 #include <hb-ft.h>
 #include <hb.hh>
 

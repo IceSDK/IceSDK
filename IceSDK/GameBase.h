@@ -12,7 +12,7 @@
 #include "Graphics/Window.h"
 
 #include <bx/allocator.h>
-#include "Physics/PhysicsSystem.h"
+
 namespace IceSDK
 {
     class GameBase

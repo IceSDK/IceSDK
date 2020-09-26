@@ -41,7 +41,7 @@ unity_lib("IceSDK") {
         #######################################################
         "Graphics/Window.cc",
         "Graphics/Texture2D.cc",
-        "Graphics/EntityHelper.cc",
+        "Graphics/GraphicsEntityHelper.cc",
 
         "Graphics/Fonts/FontFace.cc",
         "Graphics/Fonts/FontManager.cc",
@@ -65,8 +65,8 @@ unity_lib("IceSDK") {
         #######################################################
         #                      Physics                        #
         #######################################################
-        
-        "Physics/PhysicsSystem.cc",
+        "Physics/Systems/PhysicsSystem.cc",
+        "Physics/PhysicsEntityHelper.cc",
         
         #######################################################
         #                       Utils                         #
