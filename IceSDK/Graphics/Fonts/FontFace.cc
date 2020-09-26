@@ -131,8 +131,8 @@ Glyph& FontFace::GetGlyph(uint32_t pGlyph)
     }
 
     Glyph glyph{ { bmp->width, bmp->rows },
-                 glyphSlot->metrics.horiBearingY >> 6,
-                 glyphSlot->bitmap_top,
+                 (float) (glyphSlot->metrics.horiBearingY >> 6),
+                 (float) (glyphSlot->bitmap_top),
                  pixel_data };
 
     this->_glyphCache.insert({ pGlyph, glyph });

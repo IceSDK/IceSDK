@@ -4,6 +4,7 @@
 #include "Audio/AudioSystem.h"
 #include "ECS/Scene.h"
 
+#include "Input/InputPipeline.h"
 #include "Utils/Memory.h"
 
 #include "Graphics/Fonts/FontManager.h"
@@ -27,6 +28,7 @@ namespace IceSDK
         Memory::Ptr<Graphics::GameWindow> GetGameWindow() const;
         Memory::Ptr<Graphics::Shaders::ShaderManager> GetShaderManager() const;
         Memory::Ptr<Graphics::FontManager> GetFontManager() const;
+        Memory::Ptr<Input::InputPipeline> GetInputPipeline() const;
         Memory::WeakPtr<Scene> GetActiveScene() const;
 
     protected:
@@ -57,6 +59,7 @@ namespace IceSDK
         Memory::Ptr<Assets::AssetManager> _asset_manager;
         Memory::Ptr<Graphics::Shaders::ShaderManager> _shader_manager;
         Memory::Ptr<Graphics::FontManager> _font_manager;
+        Memory::Ptr<Input::InputPipeline> _input_pipeline;
     };
 }  // namespace IceSDK
 

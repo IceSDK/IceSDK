@@ -34,6 +34,7 @@ GameBase::GameBase()
     this->_font_manager = std::make_shared<Graphics::FontManager>();
     this->_shader_manager =
         std::make_shared<Graphics::Shaders::ShaderManager>();
+    this->_input_pipeline = std::make_shared<Input::InputPipeline>();
 
     this->_asset_manager->Init();
 
@@ -47,6 +48,7 @@ GameBase::~GameBase()
     this->_audio_system = nullptr;
     this->_font_manager = nullptr;
     this->_shader_manager = nullptr;
+    this->_input_pipeline = nullptr;
     this->_window = nullptr;
 }
 
@@ -55,6 +57,8 @@ void GameBase::Run()
     ICESDK_PROFILE_BEGIN_SESSION("Runtime", "Benchmark-Runtime.json");
 
     this->Init();
+
+    this->_input_pipeline->Init();
     this->_window->SetDrawCallback(GameBase::InternalDraw);
     this->_window->SetDrawInitCallback(GameBase::InternalDrawInit);
 
@@ -139,6 +143,11 @@ Memory::Ptr<Graphics::Shaders::ShaderManager> GameBase::GetShaderManager() const
 Memory::Ptr<Graphics::FontManager> GameBase::GetFontManager() const
 {
     return this->_font_manager;
+}
+
+Memory::Ptr<Input::InputPipeline> GameBase::GetInputPipeline() const
+{
+    return this->_input_pipeline;
 }
 
 Memory::WeakPtr<Scene> GameBase::GetActiveScene() const

@@ -27,7 +27,6 @@
 #endif
 
 #ifdef ICESDK_GLFW
-
     #ifdef ICESDK_WIN32
         #define GLFW_EXPOSE_NATIVE_WIN32
     #elif ICESDK_LINUX
@@ -45,7 +44,6 @@
     #ifdef ICESDK_LINUX
         #undef Glyph
     #endif
-
 #endif
 
 #ifdef ICESDK_SDL2

@@ -47,6 +47,12 @@ namespace IceSDK
             uint32_t Width() const;
             uint32_t Height() const;
 
+#if defined(ICESDK_GLFW)
+            GLFWwindow* GetNativeWindow() { return this->_window; }
+#elif defined(ICESDK_SDL2)
+            SDL_Window* GetNativeWindow() { return this->_window; }
+#endif
+
         private:
             friend GameBase;
 
