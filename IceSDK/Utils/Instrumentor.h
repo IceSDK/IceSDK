@@ -7,10 +7,10 @@
 #include <chrono>
 #include <fstream>
 #include <iomanip>
-#include <string>
-#include <thread>
 #include <mutex>
 #include <sstream>
+#include <string>
+#include <thread>
 
 namespace IceSDK
 {
@@ -33,21 +33,19 @@ namespace IceSDK
     class Instrumentor
     {
     public:
-        Instrumentor(const Instrumentor &) = delete;
-        Instrumentor(Instrumentor &&) = delete;
+        Instrumentor(const Instrumentor&) = delete;
+        Instrumentor(Instrumentor&&) = delete;
 
-        void BeginSession(const std::string &name, const std::string &filepath = "results.json")
+        void BeginSession(const std::string& name,
+                          const std::string& filepath = "results.json")
         {
             std::lock_guard lock(m_Mutex);
-            if (m_CurrentSession)
-            {
-                InternalEndSession();
-            }
+            if (m_CurrentSession) { InternalEndSession(); }
             m_OutputStream.open(filepath);
 
             if (m_OutputStream.is_open())
             {
-                m_CurrentSession = new InstrumentationSession({name});
+                m_CurrentSession = new InstrumentationSession({ name });
                 WriteHeader();
             }
             else
@@ -61,7 +59,7 @@ namespace IceSDK
             InternalEndSession();
         }
 
-        void WriteProfile(const ProfileResult &result)
+        void WriteProfile(const ProfileResult& result)
         {
             std::stringstream json;
 
@@ -84,22 +82,16 @@ namespace IceSDK
             }
         }
 
-        static Instrumentor &Get()
+        static Instrumentor& Get()
         {
             static Instrumentor instance;
             return instance;
         }
 
     private:
-        Instrumentor()
-            : m_CurrentSession(nullptr)
-        {
-        }
+        Instrumentor() : m_CurrentSession(nullptr) { }
 
-        ~Instrumentor()
-        {
-            EndSession();
-        }
+        ~Instrumentor() { EndSession(); }
 
         void WriteHeader()
         {
@@ -128,53 +120,61 @@ namespace IceSDK
 
     private:
         std::mutex m_Mutex;
-        InstrumentationSession *m_CurrentSession;
+        InstrumentationSession* m_CurrentSession;
         std::ofstream m_OutputStream;
     };
 
     class InstrumentationTimer
     {
     public:
-        InstrumentationTimer(const char *name)
-            : m_Name(name), m_Stopped(false)
+        InstrumentationTimer(const char* name) : m_Name(name), m_Stopped(false)
         {
             m_StartTimepoint = std::chrono::steady_clock::now();
         }
 
         ~InstrumentationTimer()
         {
-            if (!m_Stopped)
-                Stop();
+            if (!m_Stopped) Stop();
         }
 
         void Stop()
         {
             auto endTimepoint = std::chrono::steady_clock::now();
-            auto highResStart = FloatingPointMicroseconds{m_StartTimepoint.time_since_epoch()};
-            auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
+            auto highResStart = FloatingPointMicroseconds{
+                m_StartTimepoint.time_since_epoch()
+            };
+            auto elapsedTime =
+                std::chrono::time_point_cast<std::chrono::microseconds>(
+                    endTimepoint)
+                    .time_since_epoch()
+                - std::chrono::time_point_cast<std::chrono::microseconds>(
+                      m_StartTimepoint)
+                      .time_since_epoch();
 
-            Instrumentor::Get().WriteProfile({m_Name, highResStart, elapsedTime, std::this_thread::get_id()});
+            Instrumentor::Get().WriteProfile({ m_Name, highResStart,
+                                               elapsedTime,
+                                               std::this_thread::get_id() });
 
             m_Stopped = true;
         }
 
     private:
-        const char *m_Name;
+        const char* m_Name;
         std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
         bool m_Stopped;
     };
 
     namespace InstrumentorUtils
     {
-
-        template <size_t N>
+        template<size_t N>
         struct ChangeResult
         {
             char Data[N];
         };
 
-        template <size_t N, size_t K>
-        constexpr auto CleanupOutputString(const char (&expr)[N], const char (&remove)[K])
+        template<size_t N, size_t K>
+        constexpr auto CleanupOutputString(const char (&expr)[N],
+                                           const char (&remove)[K])
         {
             ChangeResult<N> result = {};
 
@@ -183,52 +183,60 @@ namespace IceSDK
             while (srcIndex < N)
             {
                 size_t matchIndex = 0;
-                while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+                while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1
+                       && expr[srcIndex + matchIndex] == remove[matchIndex])
                     matchIndex++;
-                if (matchIndex == K - 1)
-                    srcIndex += matchIndex;
-                result.Data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+                if (matchIndex == K - 1) srcIndex += matchIndex;
+                result.Data[dstIndex++] =
+                    expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
                 srcIndex++;
             }
             return result;
         }
-    } // namespace InstrumentorUtils
-} // namespace IceSDK
+    }  // namespace InstrumentorUtils
+}  // namespace IceSDK
 
 #define ICESDK_PROFILE 1
 #if ICESDK_PROFILE
-// Resolve which function signature macro will be used. Note that this only
-// is resolved when the (pre)compiler starts, so the syntax highlighting
-// could mark the wrong one in your editor!
-#if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
-#define ICESDK_FUNC_SIG __PRETTY_FUNCTION__
-#elif defined(__DMC__) && (__DMC__ >= 0x810)
-#define ICESDK_FUNC_SIG __PRETTY_FUNCTION__
-#elif (defined(__FUNCSIG__) || (_MSC_VER))
-#define ICESDK_FUNC_SIG __FUNCSIG__
-#elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
-#define ICESDK_FUNC_SIG __FUNCTION__
-#elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
-#define ICESDK_FUNC_SIG __FUNC__
-#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
-#define ICESDK_FUNC_SIG __func__
-#elif defined(__cplusplus) && (__cplusplus >= 201103)
-#define ICESDK_FUNC_SIG __func__
-#else
-#define ICESDK_FUNC_SIG "ICESDK_FUNC_SIG unknown!"
-#endif
+   // Resolve which function signature macro will be used. Note that this only
+    // is resolved when the (pre)compiler starts, so the syntax highlighting
+    // could mark the wrong one in your editor!
+    #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000))   \
+        || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
+        #define ICESDK_FUNC_SIG __PRETTY_FUNCTION__
+    #elif defined(__DMC__) && (__DMC__ >= 0x810)
+        #define ICESDK_FUNC_SIG __PRETTY_FUNCTION__
+    #elif (defined(__FUNCSIG__) || (_MSC_VER))
+        #define ICESDK_FUNC_SIG __FUNCSIG__
+    #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600))             \
+        || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
+        #define ICESDK_FUNC_SIG __FUNCTION__
+    #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
+        #define ICESDK_FUNC_SIG __FUNC__
+    #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
+        #define ICESDK_FUNC_SIG __func__
+    #elif defined(__cplusplus) && (__cplusplus >= 201103)
+        #define ICESDK_FUNC_SIG __func__
+    #else
+        #define ICESDK_FUNC_SIG "ICESDK_FUNC_SIG unknown!"
+    #endif
 
-#define ICESDK_PROFILE_BEGIN_SESSION(name, filepath) ::IceSDK::Instrumentor::Get().BeginSession(name, filepath)
-#define ICESDK_PROFILE_END_SESSION() ::IceSDK::Instrumentor::Get().EndSession()
-#define ICESDK_PROFILE_SCOPE_LINE2(name, line)                                                          \
-    constexpr auto fixedName##line = ::IceSDK::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
-    ::IceSDK::InstrumentationTimer timer##line(fixedName##line.Data)
-#define ICESDK_PROFILE_SCOPE_LINE(name, line) ICESDK_PROFILE_SCOPE_LINE2(name, line)
-#define ICESDK_PROFILE_SCOPE(name) ICESDK_PROFILE_SCOPE_LINE(name, __LINE__)
-#define ICESDK_PROFILE_FUNCTION() ICESDK_PROFILE_SCOPE(ICESDK_FUNC_SIG)
+    #define ICESDK_PROFILE_BEGIN_SESSION(name, filepath)                       \
+        ::IceSDK::Instrumentor::Get().BeginSession(name, filepath)
+    #define ICESDK_PROFILE_END_SESSION()                                       \
+        ::IceSDK::Instrumentor::Get().EndSession()
+    #define ICESDK_PROFILE_SCOPE_LINE2(name, line)                             \
+        constexpr auto fixedName##line =                                       \
+            ::IceSDK::InstrumentorUtils::CleanupOutputString(name,             \
+                                                             "__cdecl ");      \
+        ::IceSDK::InstrumentationTimer timer##line(fixedName##line.Data)
+    #define ICESDK_PROFILE_SCOPE_LINE(name, line)                              \
+        ICESDK_PROFILE_SCOPE_LINE2(name, line)
+    #define ICESDK_PROFILE_SCOPE(name) ICESDK_PROFILE_SCOPE_LINE(name, __LINE__)
+    #define ICESDK_PROFILE_FUNCTION() ICESDK_PROFILE_SCOPE(ICESDK_FUNC_SIG)
 #else
-#define ICESDK_PROFILE_BEGIN_SESSION(name, filepath)
-#define ICESDK_PROFILE_END_SESSION()
-#define ICESDK_PROFILE_SCOPE(name)
-#define ICESDK_PROFILE_FUNCTION()
+    #define ICESDK_PROFILE_BEGIN_SESSION(name, filepath)
+    #define ICESDK_PROFILE_END_SESSION()
+    #define ICESDK_PROFILE_SCOPE(name)
+    #define ICESDK_PROFILE_FUNCTION()
 #endif

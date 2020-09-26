@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "Graphics/Fonts/FontManager.h"
+
+#include <string>
 
 namespace IceSDK::Graphics::Components
 {
@@ -15,4 +15,4 @@ namespace IceSDK::Graphics::Components
 
         FontFaceHandle font_face_handle;
     };
-} // namespace IceSDK::Graphics::Components
+}  // namespace IceSDK::Graphics::Components

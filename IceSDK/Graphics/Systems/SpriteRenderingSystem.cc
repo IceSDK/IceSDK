@@ -2,17 +2,17 @@
 
 #include "Graphics/Systems/SpriteRenderingSystem.h"
 
-#include "ECS/Entity.h"
-#include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/CameraComponent.h"
-
+#include "ECS/Components/TransformComponent.h"
+#include "ECS/Entity.h"
 #include "ECS/Systems/CameraSystem.h"
+
+#include "Utils/Instrumentor.h"
 
 #include "Graphics/Components/MeshComponent.h"
 #include "Graphics/Components/ShaderComponent.h"
 #include "Graphics/Components/SpriteComponent.h"
 
-#include "Utils/Instrumentor.h"
 
 using namespace IceSDK;
 using namespace IceSDK::Systems;
@@ -22,46 +22,47 @@ using namespace IceSDK::Graphics::Components;
 
 void SpriteRenderingSystem::Tick(float pDelta)
 {
-	ICESDK_PROFILE_FUNCTION();
+    ICESDK_PROFILE_FUNCTION();
 }
 
 void SpriteRenderingSystem::Draw(float pDelta)
 {
-	ICESDK_PROFILE_FUNCTION();
-	const auto registry = this->_registry.lock();
-	if (registry == nullptr)
-		return;
+    ICESDK_PROFILE_FUNCTION();
+    const auto registry = this->_registry.lock();
+    if (registry == nullptr) return;
 
-	auto spriteGroup = registry->view<SpriteComponent>();
-	for (auto rawSpriteEntity : spriteGroup)
-	{
-		auto spriteEntity = Entity(this->_registry, rawSpriteEntity);
+    auto spriteGroup = registry->view<SpriteComponent>();
+    for (auto rawSpriteEntity : spriteGroup)
+    {
+        auto spriteEntity = Entity(this->_registry, rawSpriteEntity);
 
-		auto &mesh = spriteEntity.GetComponent<MeshComponent>();
-		auto &transform = spriteEntity.GetComponent<TransformComponent>();
-		auto &sprite = spriteEntity.GetComponent<SpriteComponent>();
-		auto &shader = spriteEntity.GetComponent<ShaderComponent>();
+        auto& mesh = spriteEntity.GetComponent<MeshComponent>();
+        auto& transform = spriteEntity.GetComponent<TransformComponent>();
+        auto& sprite = spriteEntity.GetComponent<SpriteComponent>();
+        auto& shader = spriteEntity.GetComponent<ShaderComponent>();
 
-		if (sprite.texture == nullptr ||
-			!bgfx::isValid(mesh.index_buffer) ||
-			!bgfx::isValid(mesh.vertex_buffer) ||
-			!bgfx::isValid(sprite.texture->GetHandle()) ||
-			!bgfx::isValid(shader.handle))
-			continue;
+        if (sprite.texture == nullptr || !bgfx::isValid(mesh.index_buffer)
+            || !bgfx::isValid(mesh.vertex_buffer)
+            || !bgfx::isValid(sprite.texture->GetHandle())
+            || !bgfx::isValid(shader.handle))
+            continue;
 
-		const auto u_tex_colour = bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
+        const auto u_tex_colour =
+            bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
 
-		const glm::vec3 real_texture_scale = {sprite.size, 1.0f};
-		glm::mat4 matrix = glm::scale(transform.model_matrix, real_texture_scale);
+        const glm::vec3 real_texture_scale = { sprite.size, 1.0f };
+        glm::mat4 matrix =
+            glm::scale(transform.model_matrix, real_texture_scale);
 
-		bgfx::setTransform(glm::value_ptr(matrix));
+        bgfx::setTransform(glm::value_ptr(matrix));
 
-		bgfx::setVertexBuffer(0, mesh.vertex_buffer);
-		bgfx::setIndexBuffer(mesh.index_buffer);
-		bgfx::setTexture(0, u_tex_colour, sprite.texture->GetHandle());
+        bgfx::setVertexBuffer(0, mesh.vertex_buffer);
+        bgfx::setIndexBuffer(mesh.index_buffer);
+        bgfx::setTexture(0, u_tex_colour, sprite.texture->GetHandle());
 
-		bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_BLEND_ALPHA);
+        bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
+                       | BGFX_STATE_BLEND_ALPHA);
 
-		bgfx::submit(0, shader.handle);
-	}
+        bgfx::submit(0, shader.handle);
+    }
 }
