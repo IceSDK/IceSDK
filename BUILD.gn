@@ -4,6 +4,7 @@ group("root") {
 
         "//Examples",
         "//Tests",
+        "//Benchmarks",
         "//tools/sources:Tools",
     ]
 }
