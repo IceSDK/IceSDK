@@ -9,6 +9,9 @@
 
 #include <glm/glm.hpp>
 
+// Pixel per meter
+#define PPM 1.0f
+
 namespace IceSDK::Physics::Entity
 {
     void InitScene(const Memory::Ptr<IceSDK::Scene>& pScene);

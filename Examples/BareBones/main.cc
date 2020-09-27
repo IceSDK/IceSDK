@@ -2,6 +2,7 @@
 #include "imgui.h"
 
 #include "GameBase.h"
+#include "Graphics/Debug/Draw.h"
 #include "Graphics/EntityHelper.h"
 #include "Graphics/Fonts/FontFace.h"
 #include "Graphics/ImGui/Widgets/SceneGraph.h"
@@ -31,27 +32,20 @@ protected:
 
         _gravity_entity = Graphics::Entity::CreateSprite(
             this->_active_scene, this->GetShaderManager(), _texture,
-            { 400, 0, 0 }, { 50, 50 }, 0.f);
+            { 200, 0, 0 }, { 50 * 2, 50 }, 180.f);
 
         _solid_entity = Graphics::Entity::CreateSprite(
             this->_active_scene, this->GetShaderManager(), _texture2,
-            { 450, 400, 0 }, { 50, 50 }, 0);
+            { 0, 400, 0 }, { 500, 50 }, 0);
 
-        _solid_entity_bottom = Graphics::Entity::CreateSprite(
-            this->_active_scene, this->GetShaderManager(), _texture2,
-            { 0, 800, 0 }, { 1800, 1 }, 1.f);
+        Physics::Entity::AttachPhysicsObject(this->_active_scene,
+                                             _gravity_entity);
 
-        Physics::Entity::AttachPhysicsObject(
-            this->_active_scene,
-            _gravity_entity);
+        Physics::Entity::AttachSolidPhysicsObject(this->_active_scene,
+                                                  _solid_entity);
 
-        Physics::Entity::AttachSolidPhysicsObject(
-            this->_active_scene,
-            _solid_entity);
-
-        Physics::Entity::AttachSolidPhysicsObject(
-            this->_active_scene,
-            _solid_entity_bottom);
+        Graphics::Debug::DrawQuad({ 0.0, 0.0 }, { 100.0, 100.0 },
+                                  { 255, 255, 255, 255 });
     }
 
     void Draw(float pDelta) override
@@ -65,7 +59,6 @@ private:
     Memory::Ptr<Graphics::Texture2D> _texture2;
     Entity _gravity_entity;
     Entity _solid_entity;
-    Entity _solid_entity_bottom;
 };
 
 Memory::Ptr<Game> g_Game;

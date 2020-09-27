@@ -9,6 +9,7 @@
 #include "Utils/Logger.h"
 
 #include "Physics/Components/RigidbodyComponent.h"
+#include "Physics/EntityHelper.h"
 
 using namespace IceSDK::Systems::Physics;
 using namespace IceSDK::Components;
@@ -39,8 +40,8 @@ void PhysicsSystem::Tick(float timeStep)
         if (!rigidbody.body) return;
 
         auto& transform = physicsEntity.GetComponent<TransformComponent>();
-        transform.position.y = rigidbody.body->GetPosition().y;
-        transform.position.x = rigidbody.body->GetPosition().x;
+        transform.position.y = rigidbody.body->GetPosition().y * PPM;
+        transform.position.x = rigidbody.body->GetPosition().x * PPM;
         transform.rotation = glm::degrees(rigidbody.body->GetAngle());
     }
 }

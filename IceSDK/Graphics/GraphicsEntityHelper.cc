@@ -10,6 +10,7 @@
 #include "Graphics/Components/ShaderComponent.h"
 #include "Graphics/Components/SpriteComponent.h"
 #include "Graphics/Components/TextComponent.h"
+#include "Graphics/Debug/Draw.h"
 #include "Graphics/EntityHelper.h"
 #include "Graphics/Shaders/compiled/fs_sprite.d3d11.h"
 #include "Graphics/Shaders/compiled/fs_sprite.d3d12.h"
@@ -29,36 +30,6 @@
 using namespace IceSDK;
 using namespace IceSDK::Graphics;
 using namespace IceSDK::Graphics::Entity;
-
-static bgfx::VertexLayout g_2DPosTexCoordColourLayout;
-struct Pos2DTexCoordColourVertex
-{
-    glm::vec2 pos;
-    glm::vec2 uv;
-    glm::vec4 colour;
-
-    static void Init()
-    {
-        ICESDK_PROFILE_FUNCTION();
-
-        g_2DPosTexCoordColourLayout.begin()
-            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
-            .end();
-    }
-};
-
-static Pos2DTexCoordColourVertex g_SpriteVertices[4] = {
-    { { 1.0f, 1.0f }, { 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-    { { 1.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-    { { 0.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-    { { 0.0f, 1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-};
-
-static const uint16_t g_SpriteIndices[6] = {
-    0, 1, 3, 1, 2, 3,
-};
 
 IceSDK::Entity Graphics::Entity::CreateSprite(
     Memory::Ptr<IceSDK::Scene> pScene,
