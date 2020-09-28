@@ -86,7 +86,7 @@ std::vector<std::string> FileSystem::ReadDirectory(std::string_view pPath,
     WIN32_FIND_DATA FindFileData;
 
     // Requires a * wildcard for some reason
-    if ((hFind = FindFirstFile(FileSystem::JoinPath(pPath, "./*").c_str(),
+    if ((hFind = FindFirstFile(FileSystem::JoinPath(pPath, "./*").data(),
                                &FindFileData))
         != INVALID_HANDLE_VALUE)
     {
@@ -97,7 +97,7 @@ std::vector<std::string> FileSystem::ReadDirectory(std::string_view pPath,
                 continue;
 
             directories.push_back(
-                std::move(FileSystem::JoinPath(pPath, FindFileData.cFileName)));
+                FileSystem::JoinPath(pPath, FindFileData.cFileName));
         } while (FindNextFile(hFind, &FindFileData));
         FindClose(hFind);
     }
@@ -113,8 +113,7 @@ std::vector<std::string> FileSystem::ReadDirectory(std::string_view pPath,
                 || std::string_view(ent->d_name) == "..")
                 continue;
 
-            directories.push_back(
-                std::move(FileSystem::JoinPath(pPath, ent->d_name)));
+            directories.push_back(FileSystem::JoinPath(pPath, ent->d_name));
         }
         closedir(dir);
     }
@@ -195,7 +194,7 @@ void FileSystem::WriteBinaryFile(std::string_view pPath,
 
     close(fp);
 #else
-    std::ofstream file(pPath, std::ios::binary | std::ios::out);
+    std::ofstream file(pPath.data(), std::ios::binary | std::ios::out);
     if (!file && file.fail()) ICESDK_CORE_ERROR("Failed to open {}", pPath);
 
     file.unsetf(std::ios::skipws);
