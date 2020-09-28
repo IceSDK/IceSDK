@@ -12,9 +12,6 @@ namespace IceSDK::Input
     class InputPipeline
     {
     public:
-        InputPipeline() = default;
-        ~InputPipeline();
-
         void Init();
 
         glm::vec2 GetMouseScrollAxis() { return this->_mouse_scroll_axis; }
