@@ -154,17 +154,3 @@ void InputPipeline::Init()
     glfwSetKeyCallback(nativeWindow, InputPipeline::KeybrdCallback);
 #endif
 }
-
-InputPipeline::~InputPipeline()
-{
-#if defined(ICESDK_GLFW)
-    auto nativeWindow = GetWindow()->GetNativeWindow();
-
-    if (nativeWindow != nullptr)
-    {
-        glfwSetCursorPosCallback(nativeWindow, NULL);
-        glfwSetScrollCallback(nativeWindow, NULL);
-        glfwSetKeyCallback(nativeWindow, NULL);
-    }
-#endif
-}
