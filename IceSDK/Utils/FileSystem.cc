@@ -210,15 +210,6 @@ void FileSystem::WriteBinaryFile(std::string_view pPath,
 #endif
 }
 
-bool FileSystem::HasExtension(std::string_view pPath, std::string_view pExt)
-{
-    if (pPath.length() < pExt.length()) return false;
-
-    return (
-        0
-        == pPath.compare(pPath.length() - pExt.length(), pExt.length(), pExt));
-}
-
 void FileSystem::MkDir(std::string_view pPath)
 {
 #ifdef ICESDK_WIN32
@@ -236,15 +227,6 @@ void FileSystem::MkDir(std::string_view pPath)
 }
 
 #include <iostream>
-
-std::string_view FileSystem::GetFileName(std::string_view pPath)
-{
-    for (auto i = pPath.size(); i > 0; --i)
-        if (pPath[i] == '/' || pPath[i] == '\\')
-            return std::string_view(pPath.begin() + (i + 1), pPath.size());
-
-    return pPath;  // Not found...
-}
 
 void FileSystem::Touch(std::string_view pPath)
 {
