@@ -169,12 +169,12 @@ and these came close:
  hashlittle() has to dance around fitting the key bytes into registers.
 --------------------------------------------------------------------
 */
-inline uint32_t hashword(
+constexpr uint32_t hashword(
     const uint32_t* k, /* the key, an array of uint32_t values */
     size_t length,     /* the length of the key, in uint32_ts */
     uint32_t initval)  /* the previous hash, or an arbitrary value */
 {
-    uint32_t a, b, c;
+    uint32_t a = 0, b = 0, c = 0;
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + (((uint32_t) length) << 2) + initval;
     /*------------------------------------------------- handle most of the key
@@ -210,13 +210,13 @@ both be initialized with seeds.  If you pass in (*pb)==0, the output
 (*pc) will be the same as the return value from hashword().
 --------------------------------------------------------------------
 */
-inline void hashword2(
+constexpr void hashword2(
     const uint32_t* k, /* the key, an array of uint32_t values */
     size_t length,     /* the length of the key, in uint32_ts */
     uint32_t* pc,      /* IN: seed OUT: primary hash value */
     uint32_t* pb)      /* IN: more seed OUT: secondary hash value */
 {
-    uint32_t a, b, c;
+    uint32_t a = 0, b = 0, c = 0;
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t)(length << 2)) + *pc;
     c += *pb;
@@ -493,7 +493,7 @@ inline void hashlittle2(
     a = b = c = 0xdeadbeef + ((uint32_t) length) + *pc;
     c += *pb;
     u.ptr = key;
-    if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0))
+    if constexpr (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0))
     {
         const uint32_t* k = (const uint32_t*) key; /* read 32-bit chunks */
         /*------ all but last block: aligned reads and affect 32 bits of (a,b,c)
@@ -711,7 +711,7 @@ inline uint32_t hashbig(const void* key, size_t length, uint32_t initval)
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t) length) + initval;
     u.ptr = key;
-    if (HASH_BIG_ENDIAN && ((u.i & 0x3) == 0))
+    if constexpr (HASH_BIG_ENDIAN && ((u.i & 0x3) == 0))
     {
         const uint32_t* k = (const uint32_t*) key; /* read 32-bit chunks */
         /*------ all but last block: aligned reads and affect 32 bits of (a,b,c)
