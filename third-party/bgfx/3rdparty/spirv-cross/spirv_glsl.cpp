@@ -145,32 +145,6 @@ static BufferPackingStandard packing_to_substruct_packing(BufferPackingStandard 
 	}
 }
 
-// Sanitizes underscores for GLSL where multiple underscores in a row are not allowed.
-string CompilerGLSL::sanitize_underscores(const string &str)
-{
-	string res;
-	res.reserve(str.size());
-
-	bool last_underscore = false;
-	for (auto c : str)
-	{
-		if (c == '_')
-		{
-			if (last_underscore)
-				continue;
-
-			res += c;
-			last_underscore = true;
-		}
-		else
-		{
-			res += c;
-			last_underscore = false;
-		}
-	}
-	return res;
-}
-
 void CompilerGLSL::init()
 {
 	if (ir.source.known)
@@ -529,6 +503,8 @@ void CompilerGLSL::find_static_extensions()
 
 string CompilerGLSL::compile()
 {
+	ir.fixup_reserved_names();
+
 	if (options.vulkan_semantics)
 		backend.allow_precision_qualifiers = true;
 	else
@@ -2150,7 +2126,7 @@ void CompilerGLSL::emit_flattened_io_block_member(const std::string &basename, c
 
 	// Sanitize underscores because joining the two identifiers might create more than 1 underscore in a row,
 	// which is not allowed.
-	flattened_name = sanitize_underscores(flattened_name);
+	ParsedIR::sanitize_underscores(flattened_name);
 
 	uint32_t last_index = indices.back();
 
@@ -2693,6 +2669,23 @@ bool CompilerGLSL::should_force_emit_builtin_block(StorageClass storage)
 	return should_force;
 }
 
+void CompilerGLSL::fixup_implicit_builtin_block_names()
+{
+	ir.for_each_typed_id<SPIRVariable>([&](uint32_t, SPIRVariable &var) {
+		auto &type = this->get<SPIRType>(var.basetype);
+		bool block = has_decoration(type.self, DecorationBlock);
+		if ((var.storage == StorageClassOutput || var.storage == StorageClassInput) && block &&
+		    is_builtin_variable(var))
+		{
+			// Make sure the array has a supported name in the code.
+			if (var.storage == StorageClassOutput)
+				set_name(var.self, "gl_out");
+			else if (var.storage == StorageClassInput)
+				set_name(var.self, "gl_in");
+		}
+	});
+}
+
 void CompilerGLSL::emit_declared_builtin_block(StorageClass storage, ExecutionModel model)
 {
 	Bitset emitted_builtins;
@@ -2874,12 +2867,6 @@ void CompilerGLSL::emit_declared_builtin_block(StorageClass storage, ExecutionMo
 
 	if (builtin_array)
 	{
-		// Make sure the array has a supported name in the code.
-		if (storage == StorageClassOutput)
-			set_name(block_var->self, "gl_out");
-		else if (storage == StorageClassInput)
-			set_name(block_var->self, "gl_in");
-
 		if (model == ExecutionModelTessellationControl && storage == StorageClassOutput)
 			end_scope_decl(join(to_name(block_var->self), "[", get_entry_point().output_vertices, "]"));
 		else
@@ -2894,11 +2881,16 @@ void CompilerGLSL::declare_undefined_values()
 {
 	bool emitted = false;
 	ir.for_each_typed_id<SPIRUndef>([&](uint32_t, const SPIRUndef &undef) {
+		auto &type = this->get<SPIRType>(undef.basetype);
+		// OpUndef can be void for some reason ...
+		if (type.basetype == SPIRType::Void)
+			return;
+
 		string initializer;
-		if (options.force_zero_initialized_variables && type_can_zero_initialize(this->get<SPIRType>(undef.basetype)))
+		if (options.force_zero_initialized_variables && type_can_zero_initialize(type))
 			initializer = join(" = ", to_zero_initialized_expression(undef.basetype));
 
-		statement(variable_decl(this->get<SPIRType>(undef.basetype), to_name(undef.self), undef.self), initializer,
+		statement(variable_decl(type, to_name(undef.self), undef.self), initializer,
 		          ";");
 		emitted = true;
 	});
@@ -2935,6 +2927,18 @@ void CompilerGLSL::emit_resources()
 	// Emit PLS blocks if we have such variables.
 	if (!pls_inputs.empty() || !pls_outputs.empty())
 		emit_pls();
+
+	switch (execution.model)
+	{
+	case ExecutionModelGeometry:
+	case ExecutionModelTessellationControl:
+	case ExecutionModelTessellationEvaluation:
+		fixup_implicit_builtin_block_names();
+		break;
+
+	default:
+		break;
+	}
 
 	// Emit custom gl_PerVertex for SSO compatibility.
 	if (options.separate_shader_objects && !options.es && execution.model != ExecutionModelFragment)
@@ -6751,7 +6755,7 @@ void CompilerGLSL::emit_subgroup_op(const Instruction &i)
 	uint32_t result_type = ops[0];
 	uint32_t id = ops[1];
 
-	auto scope = static_cast<Scope>(get<SPIRConstant>(ops[2]).scalar());
+	auto scope = static_cast<Scope>(evaluate_constant_u32(ops[2]));
 	if (scope != ScopeSubgroup)
 		SPIRV_CROSS_THROW("Only subgroup scope is supported.");
 
@@ -6885,7 +6889,7 @@ case OpGroupNonUniform##op: \
 
 	case OpGroupNonUniformQuadSwap:
 	{
-		uint32_t direction = get<SPIRConstant>(ops[4]).scalar();
+		uint32_t direction = evaluate_constant_u32(ops[4]);
 		if (direction == 0)
 			emit_unary_func_op(result_type, id, ops[3], "subgroupQuadSwapHorizontal");
 		else if (direction == 1)
@@ -7631,7 +7635,7 @@ string CompilerGLSL::access_chain_internal(uint32_t base, const uint32_t *indice
 		else if (type->basetype == SPIRType::Struct)
 		{
 			if (!is_literal)
-				index = get<SPIRConstant>(index).scalar();
+				index = evaluate_constant_u32(index);
 
 			if (index >= type->member_types.size())
 				SPIRV_CROSS_THROW("Member index is out of bounds!");
@@ -7793,7 +7797,9 @@ void CompilerGLSL::prepare_access_chain_for_scalar_access(std::string &, const S
 
 string CompilerGLSL::to_flattened_struct_member(const string &basename, const SPIRType &type, uint32_t index)
 {
-	return sanitize_underscores(join(basename, "_", to_member_name(type, index)));
+	auto ret = join(basename, "_", to_member_name(type, index));
+	ParsedIR::sanitize_underscores(ret);
+	return ret;
 }
 
 string CompilerGLSL::access_chain(uint32_t base, const uint32_t *indices, uint32_t count, const SPIRType &target_type,
@@ -7837,7 +7843,9 @@ string CompilerGLSL::access_chain(uint32_t base, const uint32_t *indices, uint32
 		}
 
 		auto basename = to_flattened_access_chain_expression(base);
-		return sanitize_underscores(join(basename, "_", chain));
+		auto ret = join(basename, "_", chain);
+		ParsedIR::sanitize_underscores(ret);
+		return ret;
 	}
 	else
 	{
@@ -7895,7 +7903,8 @@ void CompilerGLSL::store_flattened_struct(const string &basename, uint32_t rhs_i
 	for (uint32_t i = 0; i < uint32_t(member_type->member_types.size()); i++)
 	{
 		sub_indices.back() = i;
-		auto lhs = sanitize_underscores(join(basename, "_", to_member_name(*member_type, i)));
+		auto lhs = join(basename, "_", to_member_name(*member_type, i));
+		ParsedIR::sanitize_underscores(lhs);
 
 		if (get<SPIRType>(member_type->member_types[i]).basetype == SPIRType::Struct)
 		{
@@ -8147,7 +8156,7 @@ std::pair<std::string, uint32_t> CompilerGLSL::flattened_access_chain_offset(
 		// We also check if this member is a builtin, since we then replace the entire expression with the builtin one.
 		else if (type->basetype == SPIRType::Struct)
 		{
-			index = get<SPIRConstant>(index).scalar();
+			index = evaluate_constant_u32(index);
 
 			if (index >= type->member_types.size())
 				SPIRV_CROSS_THROW("Member index is out of bounds!");
@@ -8175,7 +8184,7 @@ std::pair<std::string, uint32_t> CompilerGLSL::flattened_access_chain_offset(
 			auto *constant = maybe_get<SPIRConstant>(index);
 			if (constant)
 			{
-				index = get<SPIRConstant>(index).scalar();
+				index = evaluate_constant_u32(index);
 				offset += index * (row_major_matrix_needs_conversion ? (type->width / 8) : matrix_stride);
 			}
 			else
@@ -8204,7 +8213,7 @@ std::pair<std::string, uint32_t> CompilerGLSL::flattened_access_chain_offset(
 			auto *constant = maybe_get<SPIRConstant>(index);
 			if (constant)
 			{
-				index = get<SPIRConstant>(index).scalar();
+				index = evaluate_constant_u32(index);
 				offset += index * (row_major_matrix_needs_conversion ? matrix_stride : (type->width / 8));
 			}
 			else
@@ -9276,7 +9285,7 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 		statement(declare_temporary(result_type, id), to_expression(vec), ";");
 		set<SPIRExpression>(id, to_name(id), result_type, true);
 		auto chain = access_chain_internal(id, &index, 1, 0, nullptr);
-		statement(chain, " = ", to_expression(comp), ";");
+		statement(chain, " = ", to_unpacked_expression(comp), ";");
 		break;
 	}
 
@@ -9378,7 +9387,7 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 		statement(declare_temporary(result_type, id), to_expression(composite), ";");
 		set<SPIRExpression>(id, to_name(id), result_type, true);
 		auto chain = access_chain_internal(id, elems, length, ACCESS_CHAIN_INDEX_IS_LITERAL_BIT, nullptr);
-		statement(chain, " = ", to_expression(obj), ";");
+		statement(chain, " = ", to_unpacked_expression(obj), ";");
 
 		break;
 	}
@@ -9391,7 +9400,7 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 		{
 			flush_variable_declaration(lhs);
 			flush_variable_declaration(rhs);
-			statement(to_expression(lhs), " = ", to_expression(rhs), ";");
+			statement(to_expression(lhs), " = ", to_unpacked_expression(rhs), ";");
 			register_write(lhs);
 		}
 		break;
@@ -10796,14 +10805,14 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 
 		if (opcode == OpMemoryBarrier)
 		{
-			memory = get<SPIRConstant>(ops[0]).scalar();
-			semantics = get<SPIRConstant>(ops[1]).scalar();
+			memory = evaluate_constant_u32(ops[0]);
+			semantics = evaluate_constant_u32(ops[1]);
 		}
 		else
 		{
-			execution_scope = get<SPIRConstant>(ops[0]).scalar();
-			memory = get<SPIRConstant>(ops[1]).scalar();
-			semantics = get<SPIRConstant>(ops[2]).scalar();
+			execution_scope = evaluate_constant_u32(ops[0]);
+			memory = evaluate_constant_u32(ops[1]);
+			semantics = evaluate_constant_u32(ops[2]);
 		}
 
 		if (execution_scope == ScopeSubgroup || memory == ScopeSubgroup)
@@ -10832,8 +10841,8 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 			if (next && next->op == OpControlBarrier)
 			{
 				auto *next_ops = stream(*next);
-				uint32_t next_memory = get<SPIRConstant>(next_ops[1]).scalar();
-				uint32_t next_semantics = get<SPIRConstant>(next_ops[2]).scalar();
+				uint32_t next_memory = evaluate_constant_u32(next_ops[1]);
+				uint32_t next_semantics = evaluate_constant_u32(next_ops[2]);
 				next_semantics = mask_relevant_memory_semantics(next_semantics);
 
 				bool memory_scope_covered = false;
@@ -11435,13 +11444,7 @@ void CompilerGLSL::add_member_name(SPIRType &type, uint32_t index)
 		if (name.empty())
 			return;
 
-		// Reserved for temporaries.
-		if (name[0] == '_' && name.size() >= 2 && isdigit(name[1]))
-		{
-			name.clear();
-			return;
-		}
-
+		ParsedIR::sanitize_identifier(name, true, true);
 		update_name_cache(type.member_name_cache, name);
 	}
 }
@@ -11792,15 +11795,7 @@ uint32_t CompilerGLSL::to_array_size_literal(const SPIRType &type, uint32_t inde
 	{
 		// Use the default spec constant value.
 		// This is the best we can do.
-		uint32_t array_size_id = type.array[index];
-
-		// Explicitly check for this case. The error message you would get (bad cast) makes no sense otherwise.
-		if (ir.ids[array_size_id].get_type() == TypeConstantOp)
-			SPIRV_CROSS_THROW("An array size was found to be an OpSpecConstantOp. This is not supported since "
-			                  "SPIRV-Cross cannot deduce the actual size here.");
-
-		uint32_t array_size = get<SPIRConstant>(array_size_id).scalar();
-		return array_size;
+		return evaluate_constant_u32(type.array[index]);
 	}
 }
 
@@ -12167,15 +12162,12 @@ void CompilerGLSL::add_variable(unordered_set<string> &variables_primary,
 	if (name.empty())
 		return;
 
-	// Reserved for temporaries.
-	if (name[0] == '_' && name.size() >= 2 && isdigit(name[1]))
+	ParsedIR::sanitize_underscores(name);
+	if (ParsedIR::is_globally_reserved_identifier(name, true))
 	{
 		name.clear();
 		return;
 	}
-
-	// Avoid double underscores.
-	name = sanitize_underscores(name);
 
 	update_name_cache(variables_primary, variables_secondary, name);
 }
@@ -12740,64 +12732,37 @@ void CompilerGLSL::branch(BlockID from, uint32_t cond, BlockID true_block, Block
 	auto &from_block = get<SPIRBlock>(from);
 	BlockID merge_block = from_block.merge == SPIRBlock::MergeSelection ? from_block.next_block : BlockID(0);
 
-	// If we branch directly to a selection merge target, we don't need a code path.
-	// This covers both merge out of if () / else () as well as a break for switch blocks.
-	bool true_sub = !is_conditional(true_block);
-	bool false_sub = !is_conditional(false_block);
+	// If we branch directly to our selection merge target, we don't need a code path.
+	bool true_block_needs_code = true_block != merge_block || flush_phi_required(from, true_block);
+	bool false_block_needs_code = false_block != merge_block || flush_phi_required(from, false_block);
 
-	bool true_block_is_selection_merge = true_block == merge_block;
-	bool false_block_is_selection_merge = false_block == merge_block;
+	if (!true_block_needs_code && !false_block_needs_code)
+		return;
 
-	if (true_sub)
+	emit_block_hints(get<SPIRBlock>(from));
+
+	if (true_block_needs_code)
 	{
-		emit_block_hints(get<SPIRBlock>(from));
 		statement("if (", to_expression(cond), ")");
 		begin_scope();
 		branch(from, true_block);
 		end_scope();
 
-		// If we merge to continue, we handle that explicitly in emit_block_chain(),
-		// so there is no need to branch to it directly here.
-		// break; is required to handle ladder fallthrough cases, so keep that in for now, even
-		// if we could potentially handle it in emit_block_chain().
-		if (false_sub || (!false_block_is_selection_merge && is_continue(false_block)) || is_break(false_block))
+		if (false_block_needs_code)
 		{
 			statement("else");
 			begin_scope();
 			branch(from, false_block);
 			end_scope();
 		}
-		else if (flush_phi_required(from, false_block))
-		{
-			statement("else");
-			begin_scope();
-			flush_phi(from, false_block);
-			end_scope();
-		}
 	}
-	else if (false_sub)
+	else if (false_block_needs_code)
 	{
 		// Only need false path, use negative conditional.
-		emit_block_hints(get<SPIRBlock>(from));
 		statement("if (!", to_enclosed_expression(cond), ")");
 		begin_scope();
 		branch(from, false_block);
 		end_scope();
-
-		if ((!true_block_is_selection_merge && is_continue(true_block)) || is_break(true_block))
-		{
-			statement("else");
-			begin_scope();
-			branch(from, true_block);
-			end_scope();
-		}
-		else if (flush_phi_required(from, true_block))
-		{
-			statement("else");
-			begin_scope();
-			flush_phi(from, true_block);
-			end_scope();
-		}
 	}
 }
 

@@ -17,13 +17,13 @@
 #include "macros.h"
 
 ///
-#define BX_COUNTOF(_x) sizeof(bx::CountOfRequireArrayArgumentT(_x))
+#define BX_COUNTOF(_x) sizeof(bx::CountOfRequireArrayArgumentT(_x) )
 
 ///
 #if BX_COMPILER_MSVC
-#define BX_IGNORE_C4127(_x) bx::ignoreC4127(!!(_x))
+#	define BX_IGNORE_C4127(_x) bx::ignoreC4127(!!(_x) )
 #else
-#define BX_IGNORE_C4127(_x) (!!(_x))
+#	define BX_IGNORE_C4127(_x) (!!(_x) )
 #endif // BX_COMPILER_MSVC
 
 ///
@@ -35,42 +35,42 @@ namespace bx
 	constexpr int32_t kExitFailure = 1;
 
 	///
-	template <class Ty>
+	template<class Ty>
 	constexpr bool isTriviallyCopyable();
 
 	/// Swap two values.
-	template <typename Ty>
-	void swap(Ty &_a, Ty &_b);
+	template<typename Ty>
+	void swap(Ty& _a, Ty& _b);
 
 	/// Swap memory.
-	void swap(void *_a, void *_b, size_t _numBytes);
+	void swap(void* _a, void* _b, size_t _numBytes);
 
 	/// Returns minimum of two values.
-	template <typename Ty>
-	constexpr Ty min(const Ty &_a, const Ty &_b);
+	template<typename Ty>
+	constexpr Ty min(const Ty& _a, const Ty& _b);
 
 	/// Returns maximum of two values.
-	template <typename Ty>
-	constexpr Ty max(const Ty &_a, const Ty &_b);
+	template<typename Ty>
+	constexpr Ty max(const Ty& _a, const Ty& _b);
 
 	/// Returns minimum of three values.
-	template <typename Ty>
-	constexpr Ty min(const Ty &_a, const Ty &_b, const Ty &_c);
+	template<typename Ty>
+	constexpr Ty min(const Ty& _a, const Ty& _b, const Ty& _c);
 
 	/// Returns maximum of three values.
-	template <typename Ty>
-	constexpr Ty max(const Ty &_a, const Ty &_b, const Ty &_c);
+	template<typename Ty>
+	constexpr Ty max(const Ty& _a, const Ty& _b, const Ty& _c);
 
 	/// Returns middle of three values.
-	template <typename Ty>
-	constexpr Ty mid(const Ty &_a, const Ty &_b, const Ty &_c);
+	template<typename Ty>
+	constexpr Ty mid(const Ty& _a, const Ty& _b, const Ty& _c);
 
 	/// Returns clamped value between min/max.
-	template <typename Ty>
-	constexpr Ty clamp(const Ty &_a, const Ty &_min, const Ty &_max);
+	template<typename Ty>
+	constexpr Ty clamp(const Ty& _a, const Ty& _min, const Ty& _max);
 
 	/// Returns true if value is power of 2.
-	template <typename Ty>
+	template<typename Ty>
 	constexpr bool isPowerOf2(Ty _a);
 
 	/// Copy memory block.
@@ -81,7 +81,7 @@ namespace bx
 	///
 	/// @remark Source and destination memory blocks must not overlap.
 	///
-	void memCopy(void *_dst, const void *_src, size_t _numBytes);
+	void memCopy(void* _dst, const void* _src, size_t _numBytes);
 
 	/// Copy strided memory block.
 	///
@@ -95,31 +95,53 @@ namespace bx
 	/// @remark Source and destination memory blocks must not overlap.
 	///
 	void memCopy(
-		void *_dst, uint32_t _dstStride, const void *_src, uint32_t _srcStride, uint32_t _stride, uint32_t _num);
+		  void* _dst
+		, uint32_t _dstStride
+		, const void* _src
+		, uint32_t _srcStride
+		, uint32_t _stride
+		, uint32_t _num
+		);
 
 	///
-	void memMove(void *_dst, const void *_src, size_t _numBytes);
+	void memMove(void* _dst, const void* _src, size_t _numBytes);
 
 	///
 	void memMove(
-		void *_dst, uint32_t _dstStride, const void *_src, uint32_t _srcStride, uint32_t _stride, uint32_t _num);
+		  void* _dst
+		, uint32_t _dstStride
+		, const void* _src
+		, uint32_t _srcStride
+		, uint32_t _stride
+		, uint32_t _num
+		);
 
 	///
-	void memSet(void *_dst, uint8_t _ch, size_t _numBytes);
+	void memSet(void* _dst, uint8_t _ch, size_t _numBytes);
 
 	///
-	void memSet(void *_dst, uint32_t _dstStride, uint8_t _ch, uint32_t _stride, uint32_t _num);
+	void memSet(void* _dst, uint32_t _dstStride, uint8_t _ch, uint32_t _stride, uint32_t _num);
 
 	///
-	int32_t memCmp(const void *_lhs, const void *_rhs, size_t _numBytes);
+	int32_t memCmp(const void* _lhs, const void* _rhs, size_t _numBytes);
 
 	///
 	void gather(
-		void *_dst, const void *_src, uint32_t _srcStride, uint32_t _stride, uint32_t _num);
+		  void* _dst
+		, const void* _src
+		, uint32_t _srcStride
+		, uint32_t _stride
+		, uint32_t _num
+		);
 
 	///
 	void scatter(
-		void *_dst, uint32_t _dstStride, const void *_src, uint32_t _stride, uint32_t _num);
+		  void* _dst
+		, uint32_t _dstStride
+		, const void* _src
+		, uint32_t _stride
+		, uint32_t _num
+		);
 
 } // namespace bx
 
