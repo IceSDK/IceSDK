@@ -16,10 +16,9 @@ Scene::Scene()
 
     CreateCamera();
 
-	this->_world = new b2World(b2Vec2(0, 0));
-	this->RegisterSystem<Systems::TransformSystem>();
+    this->RegisterSystem<Systems::TransformSystem>();
 
-	this->RegisterSystem<Systems::CameraSystem>();
+    this->RegisterSystem<Systems::CameraSystem>();
 }
 
 Entity Scene::CreateEntity(const std::string& pName) const
@@ -46,30 +45,12 @@ Entity Scene::CreateCamera() const
 
 void Scene::Tick(const float pDelta)
 {
-	// update physics worlds for this scene
-	this->_world->Step(PHYSICS_SPEED, 6, 2);
-
     for (auto system : this->_systems) { system->Tick(pDelta); }
 }
 
 void Scene::Draw(const float pDelta)
 {
     for (auto system : this->_systems) { system->Draw(pDelta); }
-}
-
-b2World* IceSDK::Scene::GetWorld()
-{
-	return this->_world;
-}
-
-b2Vec2 Scene::GetGravity() const
-{
-	return this->_gravity;
-}
-
-void Scene::SetGravity(const b2Vec2& gravity) {
-	this->_gravity = gravity;
-	this->_world->SetGravity(gravity);
 }
 
 Memory::WeakPtr<entt::registry> Scene::GetRegistry()

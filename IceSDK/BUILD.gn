@@ -61,12 +61,6 @@ unity_lib("IceSDK") {
         "Input/InputPipeline.cc",
         "Input/Systems/MouseInputSystem.cc",
         "Input/Systems/KeyboardInputSystem.cc",
-
-        #######################################################
-        #                      Physics                        #
-        #######################################################
-        "Physics/Systems/PhysicsSystem.cc",
-        "Physics/PhysicsEntityHelper.cc",
         
         #######################################################
         #                       Utils                         #
@@ -92,10 +86,6 @@ unity_lib("IceSDK") {
         "//third-party/freetype/include", # FREETYPE 2
         "//third-party/harfbuzz/src", # HARFBUZZ
 
-        #######################################################
-        #                      Physics                        #
-        #######################################################
-        "//third-party/box2d/include", # BOX2D
         
         #######################################################
         #                        Maths                        #
@@ -180,7 +170,6 @@ unity_lib("IceSDK") {
         "//third-party/bgfx",
         "//third-party/bimg",
         "//third-party/bx",
-        "//third-party/box2d",
         "//third-party/freetype",
         "//third-party/harfbuzz:HarfBuzz",
         "//third-party/icu",
