@@ -271,3 +271,34 @@ template ("IceSDK_Test") {
         ]
     }
 }
+
+template ("IceSDK_Benchmark") {
+    IceSDK_Project("Benchmark" + target_name) {
+        forward_variables_from(invoker, "*")
+        
+        sources += [ "//Benchmarks/Benchmark.cc" ]
+
+        if (!defined(include_dirs)) {
+            include_dirs = [ ]
+        }
+
+        if (!defined(defines)) {
+            defines = [ ]
+        }
+
+        if (!defined(cflags_cc)) {
+            cflags_cc = [ ]
+        }
+
+        if (!defined(deps)) {
+            deps = [ ]
+        }
+
+        include_dirs += [
+            "//third-party/gbenchmark/include",
+        ]
+        deps += [
+            "//third-party/gbenchmark",
+        ]
+    }
+}
