@@ -11,7 +11,7 @@ namespace IceSDK
         {
             for (auto i = pPath.size(); i > 0; --i)
                 if (pPath[i] == '/' || pPath[i] == '\\')
-                    return std::string_view(pPath.begin() + (i + 1));
+                    return std::string_view(&pPath[0] + (i + 1));
 
             return pPath;  // Not found...
         }

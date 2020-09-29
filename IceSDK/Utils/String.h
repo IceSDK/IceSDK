@@ -8,7 +8,7 @@ namespace IceSDK
 {
     namespace String
     {
-        inline std::string& Trim(std::string& input, std::string_view search)
+        inline std::string Trim(std::string input, std::string_view search)
         {
             input.erase(0, input.find_first_not_of(search));
             input.erase(input.find_last_not_of(search) + 1);

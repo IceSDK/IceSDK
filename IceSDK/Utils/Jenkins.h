@@ -4,7 +4,7 @@
 -------------------------------------------------------------------------------
 lookup3.c, by Bob Jenkins, May 2006, Public Domain.
 These are functions for producing 32-bit hashes for hash table lookup.
-hashword(), hashlittle(), hashlittle2(), hashbig(), mix(), and final()
+hashword(), hashlittle(), hashlittle2(), hashbig(), mix(), and _final()
 are externally useful functions.  Routines to test the hash are included
 if SELF_TEST is defined.  You can use this free for any purpose.  It's in
 the public domain.  It has no warranty.
@@ -20,7 +20,7 @@ If you want to find a hash of, say, exactly 7 integers, do
   a += i4; b += i5; c += i6;
   mix(a,b,c);
   a += i7;
-  final(a,b,c);
+  _final(a,b,c);
 then use c as the hash value.  If you have a variable length array of
 4-byte integers to hash, use hashword().  If you have a byte array (like
 a character string), use hashlittle().  If you have several byte arrays, or
@@ -119,7 +119,7 @@ rotates.
     }
 /*
 -------------------------------------------------------------------------------
-final -- final mixing of 3 32-bit values (a,b,c) into c
+_final -- _final mixing of 3 32-bit values (a,b,c) into c
 Pairs of (a,b,c) values differing in only a few bits will usually
 produce values of c that look totally different.  This was tested for
 * pairs that differed by one bit, by two bits, in any combination
@@ -140,7 +140,7 @@ and these came close:
  11  8 15 26 3 22 24
 -------------------------------------------------------------------------------
 */
-#define final(a, b, c)                                                         \
+#define _final(a, b, c)                                                         \
     {                                                                          \
         c ^= b;                                                                \
         c -= rot(b, 14);                                                       \
@@ -195,7 +195,7 @@ constexpr uint32_t hashword(
     case 2: b += k[1];
     case 1:
         a += k[0];
-        final(a, b, c) case 0 : /* case 0: nothing left to add */
+        _final(a, b, c) case 0 : /* case 0: nothing left to add */
                                 break;
     }
     /*------------------------------------------------------ report the result
@@ -238,7 +238,7 @@ constexpr void hashword2(
     case 2: b += k[1];
     case 1:
         a += k[0];
-        final(a, b, c) case 0 : /* case 0: nothing left to add */
+        _final(a, b, c) case 0 : /* case 0: nothing left to add */
                                 break;
     }
     /*------------------------------------------------------ report the result
@@ -465,7 +465,7 @@ inline uint32_t hashlittle(const void* key, size_t length, uint32_t initval)
         case 0: return c;
         }
     }
-    final(a, b, c) return c;
+    _final(a, b, c) return c;
 }
 /*
  * hashlittle2: return 2 32-bit hash values
@@ -691,7 +691,7 @@ inline void hashlittle2(
             return; /* zero length strings require no mixing */
         }
     }
-    final(a, b, c)* pc = c;
+    _final(a, b, c)* pc = c;
     *pb = b;
 }
 /*
@@ -849,5 +849,5 @@ inline uint32_t hashbig(const void* key, size_t length, uint32_t initval)
         case 0: return c;
         }
     }
-    final(a, b, c) return c;
+    _final(a, b, c) return c;
 }
