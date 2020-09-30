@@ -26,7 +26,6 @@ protected:
     }
 
 private:
-    Graphics::FontFaceHandle _fontHandle;
 };
 
 Memory::Ptr<Game> g_Game;
