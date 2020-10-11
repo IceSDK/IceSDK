@@ -42,6 +42,11 @@ namespace IceSDK::Graphics
         bgfx::TextureHandle GetHandle() const;
         bgfx::TextureHandle* GetHandlePtr();
 
+        bool operator==(const Texture2D& other)
+        {
+            return _inner.idx == ((Texture2D&) other)._inner.idx;
+        }
+
     private:
         uint32_t _width{};
         uint32_t _height{};

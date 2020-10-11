@@ -48,6 +48,8 @@ unity_lib("IceSDK") {
 
         "Graphics/Shaders/ShaderManager.cc",
 
+        "Graphics/SpriteBatch/SpriteBatch.cc",
+
         "Graphics/Systems/SpriteRenderingSystem.cc",
         "Graphics/Systems/TextRenderingSystem.cc",
 

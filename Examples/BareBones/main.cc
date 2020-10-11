@@ -5,6 +5,7 @@
 #include "Graphics/EntityHelper.h"
 #include "Graphics/Fonts/FontFace.h"
 #include "Graphics/ImGui/Widgets/SceneGraph.h"
+#include "Graphics/SpriteBatch/SpriteBatch.h"
 
 #include <imgui.h>
 

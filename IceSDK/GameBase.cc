@@ -30,6 +30,7 @@ GameBase::GameBase()
     this->_window =
         std::make_shared<Graphics::GameWindow>(800, 600, "IceSDK: Game Window");
     this->_audio_system = std::make_shared<Audio::AudioSystem>();
+    this->_sprite_batch = std::make_shared<Graphics::SpriteBatch>();
     this->_asset_manager = std::make_shared<Assets::AssetManager>();
     this->_font_manager = std::make_shared<Graphics::FontManager>();
     this->_shader_manager =
@@ -66,7 +67,7 @@ void GameBase::Run()
     while (!this->_exit)
     {
         ICESDK_PROFILE_SCOPE("GameBase::MainLoop");
-
+        this->_sprite_batch->NewFrame();
         this->_window->Update();
 
         // Calculate delta time
@@ -77,7 +78,9 @@ void GameBase::Run()
         const auto freq = static_cast<float>(bx::getHPFrequency());
         const auto delta = static_cast<float>(frameTime) / freq;
 
+        
         GameBase::InternalTick(delta);
+        this->_sprite_batch->EndFrame();
 
         if (this->_window->ShouldClose()) break;
     }
@@ -123,6 +126,11 @@ void GameBase::InternalMainLoop(void* arg)
 Memory::Ptr<Audio::AudioSystem> GameBase::GetAudioSystem() const
 {
     return this->_audio_system;
+}
+
+Memory::Ptr<Graphics::SpriteBatch> GameBase::GetSpriteBatch() const
+{
+    return this->_sprite_batch;
 }
 
 Memory::Ptr<Assets::AssetManager> GameBase::GetAssetManager() const

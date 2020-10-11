@@ -9,6 +9,7 @@
 
 #include "Graphics/Fonts/FontManager.h"
 #include "Graphics/Shaders/ShaderManager.h"
+#include "Graphics/SpriteBatch/SpriteBatch.h"
 #include "Graphics/Window.h"
 
 #include <bx/allocator.h>
@@ -24,6 +25,7 @@ namespace IceSDK
         void Run();
 
         Memory::Ptr<Audio::AudioSystem> GetAudioSystem() const;
+        Memory::Ptr<Graphics::SpriteBatch> GetSpriteBatch() const;
         Memory::Ptr<Assets::AssetManager> GetAssetManager() const;
         Memory::Ptr<Graphics::GameWindow> GetGameWindow() const;
         Memory::Ptr<Graphics::Shaders::ShaderManager> GetShaderManager() const;
@@ -56,6 +58,7 @@ namespace IceSDK
 
         Memory::Ptr<Graphics::GameWindow> _window;
         Memory::Ptr<Audio::AudioSystem> _audio_system;
+        Memory::Ptr<Graphics::SpriteBatch> _sprite_batch;
         Memory::Ptr<Assets::AssetManager> _asset_manager;
         Memory::Ptr<Graphics::Shaders::ShaderManager> _shader_manager;
         Memory::Ptr<Graphics::FontManager> _font_manager;

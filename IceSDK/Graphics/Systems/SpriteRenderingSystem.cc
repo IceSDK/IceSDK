@@ -9,6 +9,7 @@
 
 #include "Utils/Instrumentor.h"
 
+#include "GameBase.h"
 #include "Graphics/Components/MeshComponent.h"
 #include "Graphics/Components/ShaderComponent.h"
 #include "Graphics/Components/SpriteComponent.h"
@@ -46,22 +47,17 @@ void SpriteRenderingSystem::Draw(float pDelta)
             || !bgfx::isValid(shader.handle))
             continue;
 
-        const auto u_tex_colour =
-            bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
-
         const glm::vec3 real_texture_scale = { sprite.size, 1.0f };
-        glm::mat4 matrix =
-            glm::scale(transform.model_matrix, real_texture_scale);
 
-        bgfx::setTransform(glm::value_ptr(matrix));
-
-        bgfx::setVertexBuffer(0, mesh.vertex_buffer);
+        GetGameBase()->GetSpriteBatch()->SubmitTexturedQuad(sprite.texture, transform.position, real_texture_scale, { 1, 1, 1, 1 });
+        
+        /*bgfx::setVertexBuffer(0, mesh.vertex_buffer);
         bgfx::setIndexBuffer(mesh.index_buffer);
         bgfx::setTexture(0, u_tex_colour, sprite.texture->GetHandle());
 
         bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
                        | BGFX_STATE_BLEND_ALPHA);
 
-        bgfx::submit(0, shader.handle);
+        bgfx::submit(0, shader.handle);*/
     }
 }
