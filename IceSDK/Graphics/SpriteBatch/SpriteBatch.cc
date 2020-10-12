@@ -45,10 +45,10 @@ SpriteBatch::SpriteBatch()
     this->texture =
         bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
 
-    this->vertex_positions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-    this->vertex_positions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-    this->vertex_positions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
-    this->vertex_positions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
+    this->vertex_positions[0] = { 1.0f, 1.0f };
+    this->vertex_positions[1] = { 1.0f, 0.0f };
+    this->vertex_positions[2] = { 0.0f, 0.0f };
+    this->vertex_positions[3] = { 0.0f, 1.0f };
 }
 
 void SpriteBatch::NewFrame()
@@ -120,7 +120,7 @@ void SpriteBatch::CheckIndexes()
 }
 
 void SpriteBatch::DrawIndexed(glm::mat4 transform,
-                              glm::vec4 vertex_pos[QUAD_COUNT],
+                              glm::vec2 vertex_pos[QUAD_COUNT],
                               std::array<glm::vec2, QUAD_COUNT> uvs,
                               glm::vec4 color, float texture_id,
                               uint32_t index_count)
