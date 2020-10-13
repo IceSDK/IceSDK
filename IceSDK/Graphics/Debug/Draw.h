@@ -46,7 +46,8 @@ static const uint16_t g_SpriteIndices[6] = {
 namespace IceSDK::Graphics::Debug
 {
     // NOTE: this should be called in a draw loop
-    inline void DrawQuad(glm::vec2 pos, glm::vec2 size, glm::vec4 colour)
+    inline void DrawQuad(glm::vec2 pPosition, glm::vec2 pSize,
+                         glm::vec4 pColour)
     {
         auto Model = glm::mat4{ 1 };
         auto View = glm::mat4{ 1 };
