@@ -42,7 +42,7 @@ IceSDK::Entity Graphics::Entity::CreateSprite(
     auto entity = pScene->CreateEntity("Sprite");
 
     glm::vec2 TexSize{ 0 };
-    if (size.x != -1.f && size.y != -1.f)
+    if (pSize.x != -1.f && pSize.y != -1.f)
         TexSize = pSize;
     else if (pTex != nullptr)
         TexSize = { pTex->Width(), pTex->Height() };
