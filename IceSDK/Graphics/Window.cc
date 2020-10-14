@@ -117,7 +117,7 @@ GameWindow::GameWindow(int32_t pWidth, int32_t pHeight,
 
     ICESDK_CORE_INFO("BGFX Initialized...");
 
-    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0f,
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f,
                        0);
 
     bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
@@ -193,15 +193,16 @@ void GameWindow::Update()
     // Use debug font to print information about this example.
     bgfx::dbgTextClear();
 
+    GetGameBase()->GetSpriteBatch()->NewFrame();
     if (this->_draw_init_callback != nullptr && !this->_initialized)
     {
         this->_draw_init_callback();
         this->_initialized = true;
     }
     if (this->_draw_callback != nullptr) this->_draw_callback(delta);
-
     // Advance to next frame. Main thread will be kicked to process submitted
     // rendering primitives.
+    GetGameBase()->GetSpriteBatch()->EndFrame();
     bgfx::frame();
 }
 

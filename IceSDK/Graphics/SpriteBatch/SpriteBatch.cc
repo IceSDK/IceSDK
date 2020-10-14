@@ -9,8 +9,8 @@
 using namespace IceSDK::Graphics;
 
 static std::array<glm::vec2, QUAD_COUNT> _def_tex_coords = {
-    glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f),
-    glm::vec2(0.0f, 0.0f)
+    glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f),
+    glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f)
 };
 
 SpriteBatch::SpriteBatch()
@@ -33,7 +33,7 @@ SpriteBatch::SpriteBatch()
     }
 
     this->index_handle = bgfx::createIndexBuffer(
-        bgfx::copy(quads, max_indices * sizeof(uint32_t)));
+        bgfx::copy(quads, max_indices * sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
     delete[] quads;
 
     this->vertex_layout.begin()
@@ -45,10 +45,10 @@ SpriteBatch::SpriteBatch()
     this->texture =
         bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
 
-    this->vertex_positions[0] = { 1.0f, 1.0f };
-    this->vertex_positions[1] = { 1.0f, 0.0f };
-    this->vertex_positions[2] = { 0.0f, 0.0f };
-    this->vertex_positions[3] = { 0.0f, 1.0f };
+    this->vertex_positions[0] = { 1.0f, 1.0f, 0, 1 };
+    this->vertex_positions[1] = { 1.0f, 0.0f, 0, 1 };
+    this->vertex_positions[2] = { 0.0f, 0.0f, 0, 1 };
+    this->vertex_positions[3] = { 0.0f, 1.0f, 0, 1 };
 }
 
 void SpriteBatch::NewFrame()
@@ -63,11 +63,13 @@ void SpriteBatch::EndFrame()
     uint32_t data_size = (uint32_t)((uint8_t*) this->vertex_buffer_ptr
                                     - (uint8_t*) this->vertex_buffer_base);
 
-    bgfx::TransientVertexBuffer vb;
-    bgfx::allocTransientVertexBuffer(&vb, data_size, this->vertex_layout);
-    vb.data = (uint8_t*) this->vertex_buffer_base;
-
-    bgfx::setVertexBuffer(0, &vb);
+    if (bgfx::getAvailTransientVertexBuffer(data_size, this->vertex_layout))
+    {
+        bgfx::TransientVertexBuffer tvb;
+        bgfx::allocTransientVertexBuffer(&tvb, data_size, this->vertex_layout);
+        memcpy(tvb.data, this->vertex_buffer_base, data_size);
+        bgfx::setVertexBuffer(0, &tvb);
+    }
 
     Flush();
 }
@@ -76,11 +78,13 @@ void SpriteBatch::Flush()
 {
     if (!this->indexes) return;
 
+    uint32_t count = this->indexes ? this->indexes : this->max_indices;
+    bgfx::setIndexBuffer(
+        this->index_handle, 0,
+        count);  // this is normal index buffer - bgfx::indexbufferhandle
+
     for (uint32_t i = 0; i < this->texture_index; i++)
         bgfx::setTexture(0, this->texture, this->texture_slots[i]->GetHandle());
-
-    uint32_t count = this->indexes ? this->indexes : this->max_indices;
-    bgfx::setIndexBuffer(this->index_handle, 0, count);
 
     bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
                    | BGFX_STATE_BLEND_ALPHA);
@@ -120,18 +124,16 @@ void SpriteBatch::CheckIndexes()
 }
 
 void SpriteBatch::DrawIndexed(glm::mat4 transform,
-                              glm::vec2 vertex_pos[QUAD_COUNT],
+                              glm::vec4 vertex_pos[QUAD_COUNT],
                               std::array<glm::vec2, QUAD_COUNT> uvs,
                               glm::vec4 color, float texture_id,
                               uint32_t index_count)
 {
     for (size_t i = 0; i < QUAD_COUNT; i++)
     {
-        this->vertex_buffer_ptr->pos = vertex_pos[i];
+        this->vertex_buffer_ptr->pos = transform * vertex_pos[i];
         this->vertex_buffer_ptr->color = color;
         this->vertex_buffer_ptr->texture_pos = uvs[i];
-        /*this->vertex_buffer_ptr->texture_id = texture_id;
-        this->vertex_buffer_ptr->tiling = 1.f;*/
         this->vertex_buffer_ptr++;
     }
     this->indexes += index_count;

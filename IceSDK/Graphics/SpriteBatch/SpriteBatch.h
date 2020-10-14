@@ -16,8 +16,6 @@ namespace IceSDK::Graphics
         glm::vec2 pos;
         glm::vec2 texture_pos;
         glm::vec4 color;
-        /*float texture_id;
-        float tiling;*/
     };
 
     class SpriteBatch
@@ -33,7 +31,7 @@ namespace IceSDK::Graphics
         void SubmitTexturedQuad(Memory::Ptr<Texture2D> texture, const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
 
         void CheckIndexes();
-        void DrawIndexed(glm::mat4 transform, glm::vec2 vertex_pos[QUAD_COUNT],
+        void DrawIndexed(glm::mat4 transform, glm::vec4 vertex_pos[QUAD_COUNT],
                          std::array<glm::vec2, QUAD_COUNT> uvs, glm::vec4 color,
                          float texture_id = 0.f, uint32_t index_count = 6);
 
@@ -48,7 +46,7 @@ namespace IceSDK::Graphics
         uint32_t indexes = 0;
         uint32_t texture_index = 0;
 
-        glm::vec2 vertex_positions[4];
+        glm::vec4 vertex_positions[4];
         std::array<Memory::Ptr<Texture2D>, max_texture_slots> texture_slots;
         //                                 ^^^^^^^^^^^^^^^^^ texture count - we can get it
         //                                 with bgfx::caps
