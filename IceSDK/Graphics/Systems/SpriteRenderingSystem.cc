@@ -47,17 +47,6 @@ void SpriteRenderingSystem::Draw(float pDelta)
             || !bgfx::isValid(shader.handle))
             continue;
 
-        const glm::vec3 real_texture_scale = { sprite.size, 1.0f };
-
-        GetGameBase()->GetSpriteBatch()->SubmitTexturedQuad(sprite.texture, transform.position, real_texture_scale, { 1, 1, 1, 1 });
-        
-        /*bgfx::setVertexBuffer(0, mesh.vertex_buffer);
-        bgfx::setIndexBuffer(mesh.index_buffer);
-        bgfx::setTexture(0, u_tex_colour, sprite.texture->GetHandle());
-
-        bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
-                       | BGFX_STATE_BLEND_ALPHA);
-
-        bgfx::submit(0, shader.handle);*/
+        GetGameBase()->GetSpriteBatch()->SubmitTexturedQuad(sprite.texture, transform.position, sprite.size, { 1, 1, 1, 1 });
     }
 }

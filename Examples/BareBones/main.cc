@@ -32,9 +32,18 @@ protected:
 
         this->_boxTexture =
             this->GetAssetManager()->LoadTexture("/Assets/Box.png");
+
+        
+        this->_boxTexture2 =
+            this->GetAssetManager()->LoadTexture("/Assets/Ground.png");
+
         this->_box = Graphics::Entity::CreateSprite(
             activeScene, this->GetShaderManager(), this->_boxTexture,
             { 100.f, 100.f, 0.f });
+
+        this->_box2 = Graphics::Entity::CreateSprite(
+            activeScene, this->GetShaderManager(), this->_boxTexture2,
+            { 400.f, 100.f, 0.f });
 
         // Make sure Roboto-Regular.ttf is in out/ folder!
 
@@ -62,7 +71,9 @@ protected:
 
 private:
     Entity _box;
+    Entity _box2;
     Memory::Ptr<Graphics::Texture2D> _boxTexture;
+    Memory::Ptr<Graphics::Texture2D> _boxTexture2;
 
     /* Make sure the code above is uncommented.
     Entity _text;

@@ -8,18 +8,18 @@
 
 using namespace IceSDK::Graphics;
 
-static std::array<glm::vec2, QUAD_COUNT> _def_tex_coords = {
-    glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f),
-    glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f)
+static std::array<glm::vec2, QUAD_COUNT> g_DefTexCoords = {
+    glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 0.0f),
+    glm::vec2(0.0f, 1.0f)
 };
 
 SpriteBatch::SpriteBatch()
 {
-    this->vertex_buffer_base = new VertexInfo[this->max_vertices];
-    uint32_t* quads = new uint32_t[this->max_indices];
+    this->_vertexBuffer = new VertexInfo[this->_maxVertices];
+    uint32_t* quads = new uint32_t[this->_maxIndices];
     uint32_t offset = 0;
 
-    for (uint32_t i = 0; i < this->max_indices; i += 6)
+    for (uint32_t i = 0; i < this->_maxIndices; i += 6)
     {
         quads[i + 0] = offset + 0;
         quads[i + 1] = offset + 1;
@@ -32,59 +32,73 @@ SpriteBatch::SpriteBatch()
         offset += 4;
     }
 
-    this->index_handle = bgfx::createIndexBuffer(
-        bgfx::copy(quads, max_indices * sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
+    this->_indexHandle = bgfx::createIndexBuffer(
+        bgfx::copy(quads, _maxIndices * sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
     delete[] quads;
 
-    this->vertex_layout.begin()
+    this->_vertexLayout.begin()
         .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
         .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
         .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float, true)
         .end();
 
-    this->texture =
+    this->_textureUniform =
         bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
 
-    this->vertex_positions[0] = { 1.0f, 1.0f, 0, 1 };
-    this->vertex_positions[1] = { 1.0f, 0.0f, 0, 1 };
-    this->vertex_positions[2] = { 0.0f, 0.0f, 0, 1 };
-    this->vertex_positions[3] = { 0.0f, 1.0f, 0, 1 };
+    this->_vertexPositions[0] = { 1.0f, 1.0f, 0, 1 };
+    this->_vertexPositions[1] = { 1.0f, 0.0f, 0, 1 };
+    this->_vertexPositions[2] = { 0.0f, 0.0f, 0, 1 };
+    this->_vertexPositions[3] = { 0.0f, 1.0f, 0, 1 };
 }
 
 void SpriteBatch::NewFrame()
 {
-    this->indexes = 0;
-    this->vertex_buffer_ptr = this->vertex_buffer_base;
-    this->texture_index = 0;
+    this->_indexes = 0;
+    this->_vertexBufferPtr = this->_vertexBuffer;
+    this->_textureIndex = 0;
 }
 
 void SpriteBatch::EndFrame()
 {
-    uint32_t data_size = (uint32_t)((uint8_t*) this->vertex_buffer_ptr
-                                    - (uint8_t*) this->vertex_buffer_base);
-
-    if (bgfx::getAvailTransientVertexBuffer(data_size, this->vertex_layout))
-    {
-        bgfx::TransientVertexBuffer tvb;
-        bgfx::allocTransientVertexBuffer(&tvb, data_size, this->vertex_layout);
-        memcpy(tvb.data, this->vertex_buffer_base, data_size);
-        bgfx::setVertexBuffer(0, &tvb);
-    }
-
     Flush();
 }
 
 void SpriteBatch::Flush()
 {
-    if (!this->indexes) return;
+    if (!this->_indexes) return;
 
-    uint32_t count = this->indexes ? this->indexes : this->max_indices;
+    uint32_t data_size = (uint32_t)((uint8_t*) this->_vertexBufferPtr
+                                    - (uint8_t*) this->_vertexBuffer);
+
+    if (bgfx::getAvailTransientVertexBuffer(data_size, this->_vertexLayout))
+    {
+        bgfx::TransientVertexBuffer tvb;
+        bgfx::allocTransientVertexBuffer(&tvb, data_size, this->_vertexLayout);
+        memcpy(tvb.data, this->_vertexBuffer, data_size);
+        bgfx::setVertexBuffer(0, &tvb);
+    }
+
+    uint32_t count = this->_indexes ? this->_indexes : this->_maxIndices;
     bgfx::setIndexBuffer(
-        this->index_handle, 0,
+        this->_indexHandle, 0,
         count);  // this is normal index buffer - bgfx::indexbufferhandle
 
-    for (uint32_t i = 0; i < this->texture_index; i++)
-        bgfx::setTexture(0, this->texture, this->texture_slots[i]->GetHandle());
+    for (uint32_t i = 0; i < this->_textureIndex; i++)
+        bgfx::setTexture(i, this->_textureUniform,
+                         this->_textureSlots[i]->GetHandle());
+
+    /*
+        TODO: Somehow figure out how to compile shaders, we need to make
+        multiple samplers so we will use SAMPLER2DARRAY with 32 elements
+        init, if render caps are something like 16 or 8, it will get ig-
+        nored.
+
+        Current issue: Our batch is only using one sampler which causes
+        _textureUniform limitation. We can only submit one _textureUniform (the
+       last one)
+
+        Status: Not fixed.
+    */
 
     bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
                    | BGFX_STATE_BLEND_ALPHA);
@@ -97,12 +111,12 @@ void SpriteBatch::FlushReset()
 {
     EndFrame();
 
-    this->indexes = 0;
-    this->vertex_buffer_ptr = this->vertex_buffer_base;
-    this->texture_index = 0;
+    this->_indexes = 0;
+    this->_vertexBufferPtr = this->_vertexBuffer;
+    this->_textureIndex = 0;
 }
 
-void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> texture,
+void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture,
                                      const glm::vec2& position,
                                      const glm::vec2& size,
                                      const glm::vec4& color)
@@ -114,13 +128,13 @@ void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> texture,
 
     bgfx::setTransform(glm::value_ptr(transform));
 
-    DrawIndexed(transform, this->vertex_positions, _def_tex_coords, color,
-                SetTexture(texture));
+    DrawIndexed(transform, this->_vertexPositions, g_DefTexCoords, color,
+                SetTexture(pTexture));
 }
 
 void SpriteBatch::CheckIndexes()
 {
-    if (this->indexes >= SpriteBatch::max_indices) FlushReset();
+    if (this->_indexes >= SpriteBatch::_maxIndices) FlushReset();
 }
 
 void SpriteBatch::DrawIndexed(glm::mat4 transform,
@@ -131,20 +145,20 @@ void SpriteBatch::DrawIndexed(glm::mat4 transform,
 {
     for (size_t i = 0; i < QUAD_COUNT; i++)
     {
-        this->vertex_buffer_ptr->pos = transform * vertex_pos[i];
-        this->vertex_buffer_ptr->color = color;
-        this->vertex_buffer_ptr->texture_pos = uvs[i];
-        this->vertex_buffer_ptr++;
+        this->_vertexBufferPtr->pos = transform * vertex_pos[i];
+        this->_vertexBufferPtr->color = color;
+        this->_vertexBufferPtr->texture_pos = uvs[i];
+        this->_vertexBufferPtr++;
     }
-    this->indexes += index_count;
+    this->_indexes += index_count;
 }
 
-float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> texture)
+float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> pTexture)
 {
     float textureIndex = 0.0f;
-    for (uint32_t i = 0; i < this->texture_index; i++)
+    for (uint32_t i = 0; i < this->_textureIndex; i++)
     {
-        if (*this->texture_slots[i] == *texture)
+        if (*this->_textureSlots[i] == *pTexture)
         {
             textureIndex = (float) i;
             break;
@@ -153,11 +167,11 @@ float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> texture)
 
     if (textureIndex == 0.0f)
     {
-        if (this->texture_index >= SpriteBatch::max_texture_slots) FlushReset();
+        if (this->_textureIndex >= SpriteBatch::_maxTextureSlots) FlushReset();
 
-        textureIndex = (float) this->texture_index;
-        this->texture_slots[this->texture_index] = texture;
-        this->texture_index++;
+        textureIndex = (float) this->_textureIndex;
+        this->_textureSlots[this->_textureIndex] = pTexture;
+        this->_textureIndex++;
     }
 
     return textureIndex;

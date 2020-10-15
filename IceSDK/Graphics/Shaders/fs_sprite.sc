@@ -1,8 +1,8 @@
-$input v_texcoord0, v_color0
+$input v_texcoord0, v_color0, v_batchinfo
 
 #include "../../../../third-party/bgfx/src/bgfx_shader.sh"
 
-SAMPLER2D(s_texColour, 0);
+SAMPLER2DARRAY(s_texColour, 0);
 
 void main()
 {
