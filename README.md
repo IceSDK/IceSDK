@@ -21,9 +21,9 @@ git clone https://github.com/IceSDK/IceSDK
 python3 ./tools/setup.py --ide=vscode
 ```
 
-## Manuel Setup
+## Manual Setup
 
-Manuel setup isn't really supported, if you want to know how it works,
+Manual setup isn't really supported, if you want to know how it works,
 please checkout .ide and or .github/workflows
 
 ## Supported Platforms
