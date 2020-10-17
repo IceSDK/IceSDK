@@ -40,10 +40,15 @@ SpriteBatch::SpriteBatch()
         .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
         .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
         .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float, true)
+        .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
         .end();
 
-    this->_textureUniform =
-        bgfx::createUniform("s_texColour", bgfx::UniformType::Sampler);
+    for (int i = 0; i < this->_maxTextureSlots; i++)
+    {
+        const std::string uni_name = "s_texColour" + std::to_string(i);
+        this->_textureUniforms[i] =
+            bgfx::createUniform(uni_name.c_str(), bgfx::UniformType::Sampler);
+    }
 
     this->_vertexPositions[0] = { 1.0f, 1.0f, 0, 1 };
     this->_vertexPositions[1] = { 1.0f, 0.0f, 0, 1 };
@@ -84,21 +89,10 @@ void SpriteBatch::Flush()
         count);  // this is normal index buffer - bgfx::indexbufferhandle
 
     for (uint32_t i = 0; i < this->_textureIndex; i++)
-        bgfx::setTexture(i, this->_textureUniform,
-                         this->_textureSlots[i]->GetHandle());
-
-    /*
-        TODO: Somehow figure out how to compile shaders, we need to make
-        multiple samplers so we will use SAMPLER2DARRAY with 32 elements
-        init, if render caps are something like 16 or 8, it will get ig-
-        nored.
-
-        Current issue: Our batch is only using one sampler which causes
-        _textureUniform limitation. We can only submit one _textureUniform (the
-       last one)
-
-        Status: Not fixed.
-    */
+    {
+        bgfx::setTexture(i, this->_textureUniforms[i],
+                             this->_textureSlots[i]->GetHandle());
+    }
 
     bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
                    | BGFX_STATE_BLEND_ALPHA);
@@ -148,6 +142,7 @@ void SpriteBatch::DrawIndexed(glm::mat4 transform,
         this->_vertexBufferPtr->pos = transform * vertex_pos[i];
         this->_vertexBufferPtr->color = color;
         this->_vertexBufferPtr->texture_pos = uvs[i];
+        this->_vertexBufferPtr->batch_info = { texture_id, 1 };
         this->_vertexBufferPtr++;
     }
     this->_indexes += index_count;

@@ -16,6 +16,7 @@ namespace IceSDK::Graphics
         glm::vec2 pos;
         glm::vec2 texture_pos;
         glm::vec4 color;
+        glm::vec2 batch_info;
     };
 
     class SpriteBatch
@@ -38,6 +39,13 @@ namespace IceSDK::Graphics
         float SetTexture(Memory::Ptr<Texture2D> pTexture);
 
     private:
+        /*
+            Sprite batch,
+            some raw pointers don't require smart pointers, let
+            them stay raw. we already delete them at the end so 
+            don't bother adding any smart pointer for quads or 
+            vertex_XX
+        */
         static const uint32_t _maxQuads = 20000;
         static const uint32_t _maxVertices = _maxQuads * 4;
         static const uint32_t _maxIndices = _maxQuads * 6;
@@ -57,6 +65,6 @@ namespace IceSDK::Graphics
         bgfx::VertexLayout _vertexLayout;
         bgfx::IndexBufferHandle _indexHandle;
 
-        bgfx::UniformHandle _textureUniform;
+        std::array<bgfx::UniformHandle, _maxTextureSlots> _textureUniforms; // size of that member must be same as _textureSlots
     };
 }  // namespace IceSDK::Graphics
