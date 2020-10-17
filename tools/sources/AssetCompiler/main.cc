@@ -7,6 +7,7 @@
 #include "Utils/FileSystem.h"
 #include "Utils/Memory.h"
 #include "Utils/String.h"
+#undef mix
 #include "Utils/Logger.h"
 
 #include "GameBase.h"
