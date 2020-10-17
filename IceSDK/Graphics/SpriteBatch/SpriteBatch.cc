@@ -43,7 +43,7 @@ SpriteBatch::SpriteBatch()
         .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
         .end();
 
-    for (int i = 0; i < this->_maxTextureSlots; i++)
+    for (uint32_t i = 0; i < this->_maxTextureSlots; i++)
     {
         const std::string uni_name = "s_texColour" + std::to_string(i);
         this->_textureUniforms[i] =
