@@ -39,7 +39,7 @@ protected:
 
         this->_box = Graphics::Entity::CreateSprite(
             activeScene, this->GetShaderManager(), this->_boxTexture,
-            { 100.f, 100.f, 0.f });
+            { 0.f, 0.f, 0.f });
 
         this->_box2 = Graphics::Entity::CreateSprite(
             activeScene, this->GetShaderManager(), this->_boxTexture2,

@@ -44,6 +44,12 @@ namespace IceSDK
                                     const glm::vec2& pSize,
                                     const glm::vec4& pColour);
 
+            void SubmitTiledSprite(Memory::Ptr<Texture2D> pTexture,
+                                   const glm::vec2& pPosition,
+                                   const glm::vec2& pSize,
+                                   const glm::vec4& pTileInfo,
+                                   const glm::vec4& pColour);
+
             void CheckIndexes();
             void DrawIndexed(glm::mat4 transform,
                              glm::vec4 vertex_pos[QUAD_COUNT],
@@ -52,6 +58,9 @@ namespace IceSDK
                              uint32_t index_count = 6);
 
             float SetTexture(Memory::Ptr<Texture2D> pTexture);
+            
+            std::array<glm::vec2, QUAD_COUNT> MakeTiled(
+                Memory::Ptr<Texture2D> pTexture, const glm::vec4& pTileInfo);
 
         private:
             /*

@@ -7,7 +7,7 @@
 #include "Utils/FileSystem.h"
 #include "Utils/Memory.h"
 #include "Utils/String.h"
-#undef mix
+#undef mix // fuck yourself jenkins
 #include "Utils/Logger.h"
 
 #include "GameBase.h"

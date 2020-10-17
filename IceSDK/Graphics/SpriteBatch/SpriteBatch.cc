@@ -51,9 +51,7 @@ SpriteBatch::SpriteBatch()
     this->_vertexPositions[3] = { 0.0f, 1.0f, 0, 1 };
 }
 
-SpriteBatch::~SpriteBatch() {
-
-}
+SpriteBatch::~SpriteBatch() { }
 
 void SpriteBatch::NewFrame()
 {
@@ -130,6 +128,22 @@ void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture,
                 SetTexture(pTexture));
 }
 
+void SpriteBatch::SubmitTiledSprite(Memory::Ptr<Texture2D> pTexture,
+                                    const glm::vec2& pPosition,
+                                    const glm::vec2& pSize,
+                                    const glm::vec4& pTileInfo,
+                                    const glm::vec4& pColour)
+{
+    CheckIndexes();
+    glm::mat4 transform =
+        glm::translate(glm::mat4(1.0f), { pPosition.x, pPosition.y, 1 })
+        * glm::scale(glm::mat4(1.0f), { pSize.x, pSize.y, 1.0f });
+
+    bgfx::setTransform(glm::value_ptr(transform));
+    DrawIndexed(transform, this->_vertexPositions, MakeTiled(pTexture, pTileInfo), pColour,
+                SetTexture(pTexture));
+}
+
 void SpriteBatch::CheckIndexes()
 {
     if (this->_indexes >= _maxIndices) FlushReset();
@@ -174,4 +188,20 @@ float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> pTexture)
     }
 
     return textureIndex;
+}
+
+std::array<glm::vec2, QUAD_COUNT> SpriteBatch::MakeTiled(
+    Memory::Ptr<Texture2D> pTexture, const glm::vec4& pTileInfo)
+{
+    float X = (1.f / pTexture->Width()) * pTileInfo.x;
+    float Y = 1.f - (1.f / pTexture->Height()) * pTileInfo.y;
+    float W = (1.f / pTexture->Width()) * pTileInfo.z;
+    float H = (1.f / pTexture->Height()) * pTileInfo.w;
+
+    std::array<glm::vec2, QUAD_COUNT> ret;
+    ret[0] = { X, Y };
+    ret[1] = { X + W, Y };
+    ret[2] = { X + W, Y - H };
+    ret[3] = { X, Y - H };
+    return ret;
 }
