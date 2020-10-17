@@ -2,7 +2,7 @@
 
 # IceSDK
 
-IceSDK is a cold little Game SDK to create games You can use individuel parts or
+IceSDK is a cold little Game SDK to create games. You can use individuel parts or
 just use it as a Game Engine itself.
 
 ## How to setup
