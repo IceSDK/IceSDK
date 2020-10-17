@@ -140,8 +140,8 @@ void SpriteBatch::SubmitTiledSprite(Memory::Ptr<Texture2D> pTexture,
         * glm::scale(glm::mat4(1.0f), { pSize.x, pSize.y, 1.0f });
 
     bgfx::setTransform(glm::value_ptr(transform));
-    DrawIndexed(transform, this->_vertexPositions, MakeTiled(pTexture, pTileInfo), pColour,
-                SetTexture(pTexture));
+    DrawIndexed(transform, this->_vertexPositions,
+                MakeTiled(pTexture, pTileInfo), pColour, SetTexture(pTexture));
 }
 
 void SpriteBatch::CheckIndexes()
@@ -149,21 +149,23 @@ void SpriteBatch::CheckIndexes()
     if (this->_indexes >= _maxIndices) FlushReset();
 }
 
-void SpriteBatch::DrawIndexed(glm::mat4 transform,
-                              glm::vec4 vertex_pos[QUAD_COUNT],
-                              std::array<glm::vec2, QUAD_COUNT> uvs,
-                              const glm::vec4& pColour, float texture_id,
-                              uint32_t index_count)
+void SpriteBatch::DrawIndexed(glm::mat4 pTransform,
+                              glm::vec4 pVertexPosition[QUAD_COUNT],
+                              std::array<glm::vec2, QUAD_COUNT> pUVs,
+                              const glm::vec4& pColour, float pTextureID,
+                              uint32_t pIndexCount)
 {
     for (size_t i = 0; i < QUAD_COUNT; i++)
     {
-        this->_vertexBufferPtr->pos = transform * vertex_pos[i];
+        this->_vertexBufferPtr->pos = pTransform * pVertexPosition[i];
         this->_vertexBufferPtr->color = pColour;
-        this->_vertexBufferPtr->texture_pos = uvs[i];
-        this->_vertexBufferPtr->batch_info = { texture_id, 1 };
+        this->_vertexBufferPtr->texture_pos = pUVs[i];
+        this->_vertexBufferPtr->batch_info = { pTextureID, 1 };
+        //                                                 ^ this is tiling,
+        //                                                 good for optimization
         this->_vertexBufferPtr++;
     }
-    this->_indexes += index_count;
+    this->_indexes += pIndexCount;
 }
 
 float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> pTexture)
