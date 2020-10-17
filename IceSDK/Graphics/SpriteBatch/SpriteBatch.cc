@@ -91,7 +91,7 @@ void SpriteBatch::Flush()
     for (uint32_t i = 0; i < this->_textureIndex; i++)
     {
         bgfx::setTexture(i, this->_textureUniforms[i],
-                             this->_textureSlots[i]->GetHandle());
+                         this->_textureSlots[i]->GetHandle());
     }
 
     bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A
@@ -111,18 +111,18 @@ void SpriteBatch::FlushReset()
 }
 
 void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture,
-                                     const glm::vec2& position,
-                                     const glm::vec2& size,
-                                     const glm::vec4& color)
+                                     const glm::vec2& pPosition,
+                                     const glm::vec2& pSize,
+                                     const glm::vec4& pColour)
 {
     CheckIndexes();
     glm::mat4 transform =
-        glm::translate(glm::mat4(1.0f), { position.x, position.y, 1 })
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+        glm::translate(glm::mat4(1.0f), { pPosition.x, pPosition.y, 1 })
+        * glm::scale(glm::mat4(1.0f), { pSize.x, pSize.y, 1.0f });
 
     bgfx::setTransform(glm::value_ptr(transform));
 
-    DrawIndexed(transform, this->_vertexPositions, g_DefTexCoords, color,
+    DrawIndexed(transform, this->_vertexPositions, g_DefTexCoords, pColour,
                 SetTexture(pTexture));
 }
 
@@ -134,13 +134,13 @@ void SpriteBatch::CheckIndexes()
 void SpriteBatch::DrawIndexed(glm::mat4 transform,
                               glm::vec4 vertex_pos[QUAD_COUNT],
                               std::array<glm::vec2, QUAD_COUNT> uvs,
-                              glm::vec4 color, float texture_id,
+                              const glm::vec4& pColour, float texture_id,
                               uint32_t index_count)
 {
     for (size_t i = 0; i < QUAD_COUNT; i++)
     {
         this->_vertexBufferPtr->pos = transform * vertex_pos[i];
-        this->_vertexBufferPtr->color = color;
+        this->_vertexBufferPtr->color = pColour;
         this->_vertexBufferPtr->texture_pos = uvs[i];
         this->_vertexBufferPtr->batch_info = { texture_id, 1 };
         this->_vertexBufferPtr++;

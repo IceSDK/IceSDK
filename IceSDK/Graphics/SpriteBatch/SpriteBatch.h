@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils/Memory.h"
+
 #include "Graphics/Texture2D.h"
 
 #include <bgfx/bgfx.h>
@@ -22,19 +24,23 @@ namespace IceSDK::Graphics
     class SpriteBatch
     {
     public:
-        SpriteBatch();
+        explicit SpriteBatch();
 
         void NewFrame();
         void EndFrame();
         void Flush();
         void FlushReset();
 
-        void SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture, const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
+        void SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture,
+                                const glm::vec2& pPosition,
+                                const glm::vec2& pSize,
+                                const glm::vec4& pColour);
 
         void CheckIndexes();
         void DrawIndexed(glm::mat4 transform, glm::vec4 vertex_pos[QUAD_COUNT],
-                         std::array<glm::vec2, QUAD_COUNT> uvs, glm::vec4 color,
-                         float texture_id = 0.f, uint32_t index_count = 6);
+                         std::array<glm::vec2, QUAD_COUNT> uvs,
+                         const glm::vec4& pColour, float texture_id = 0.f,
+                         uint32_t index_count = 6);
 
         float SetTexture(Memory::Ptr<Texture2D> pTexture);
 
@@ -42,8 +48,8 @@ namespace IceSDK::Graphics
         /*
             Sprite batch,
             some raw pointers don't require smart pointers, let
-            them stay raw. we already delete them at the end so 
-            don't bother adding any smart pointer for quads or 
+            them stay raw. we already delete them at the end so
+            don't bother adding any smart pointer for quads or
             vertex_XX
         */
         static const uint32_t _maxQuads = 20000;
@@ -56,8 +62,8 @@ namespace IceSDK::Graphics
 
         glm::vec4 _vertexPositions[4];
         std::array<Memory::Ptr<Texture2D>, _maxTextureSlots> _textureSlots;
-        //                                 ^^^^^^^^^^^^^^^^^ texture count - we can get it
-        //                                 with bgfx::caps
+        //                                 ^^^^^^^^^^^^^^^^^ texture count - we
+        //                                 can get it with bgfx::caps
 
         VertexInfo* _vertexBuffer = nullptr;
         VertexInfo* _vertexBufferPtr = nullptr;
@@ -65,6 +71,8 @@ namespace IceSDK::Graphics
         bgfx::VertexLayout _vertexLayout;
         bgfx::IndexBufferHandle _indexHandle;
 
-        std::array<bgfx::UniformHandle, _maxTextureSlots> _textureUniforms; // size of that member must be same as _textureSlots
+        std::array<bgfx::UniformHandle, _maxTextureSlots>
+            _textureUniforms;  // size of that member must be same as
+                               // _textureSlots
     };
 }  // namespace IceSDK::Graphics
