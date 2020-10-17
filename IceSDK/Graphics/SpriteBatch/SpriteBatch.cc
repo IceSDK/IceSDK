@@ -10,11 +10,11 @@ using namespace IceSDK::Graphics;
 
 SpriteBatch::SpriteBatch()
 {
-    this->_vertexBuffer = new VertexInfo[this->_maxVertices];
-    uint32_t* quads = new uint32_t[this->_maxIndices];
+    this->_vertexBuffer = new VertexInfo[_maxVertices];
+    uint32_t* quads = new uint32_t[_maxIndices];
     uint32_t offset = 0;
 
-    for (uint32_t i = 0; i < this->_maxIndices; i += 6)
+    for (uint32_t i = 0; i < _maxIndices; i += 6)
     {
         quads[i + 0] = offset + 0;
         quads[i + 1] = offset + 1;
@@ -38,7 +38,7 @@ SpriteBatch::SpriteBatch()
         .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
         .end();
 
-    for (uint32_t i = 0; i < this->_maxTextureSlots; i++)
+    for (uint32_t i = 0; i < _maxTextureSlots; i++)
     {
         const std::string uni_name = "s_texColour" + std::to_string(i);
         this->_textureUniforms[i] =
@@ -49,6 +49,10 @@ SpriteBatch::SpriteBatch()
     this->_vertexPositions[1] = { 1.0f, 0.0f, 0, 1 };
     this->_vertexPositions[2] = { 0.0f, 0.0f, 0, 1 };
     this->_vertexPositions[3] = { 0.0f, 1.0f, 0, 1 };
+}
+
+SpriteBatch::~SpriteBatch() {
+
 }
 
 void SpriteBatch::NewFrame()
@@ -78,7 +82,7 @@ void SpriteBatch::Flush()
         bgfx::setVertexBuffer(0, &tvb);
     }
 
-    uint32_t count = this->_indexes ? this->_indexes : this->_maxIndices;
+    uint32_t count = this->_indexes ? this->_indexes : _maxIndices;
     bgfx::setIndexBuffer(
         this->_indexHandle, 0,
         count);  // this is normal index buffer - bgfx::indexbufferhandle
@@ -128,7 +132,7 @@ void SpriteBatch::SubmitTexturedQuad(Memory::Ptr<Texture2D> pTexture,
 
 void SpriteBatch::CheckIndexes()
 {
-    if (this->_indexes >= SpriteBatch::_maxIndices) FlushReset();
+    if (this->_indexes >= _maxIndices) FlushReset();
 }
 
 void SpriteBatch::DrawIndexed(glm::mat4 transform,
@@ -162,7 +166,7 @@ float SpriteBatch::SetTexture(Memory::Ptr<Texture2D> pTexture)
 
     if (textureIndex == 0.0f)
     {
-        if (this->_textureIndex >= SpriteBatch::_maxTextureSlots) FlushReset();
+        if (this->_textureIndex >= _maxTextureSlots) FlushReset();
 
         textureIndex = (float) this->_textureIndex;
         this->_textureSlots[this->_textureIndex] = pTexture;
