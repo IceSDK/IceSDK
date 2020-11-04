@@ -26,4 +26,4 @@ jobs:
         run: cmake --build build --config Release --target ALL_BUILD -- /maxcpucount:14
 
       - name: Execute Tests
-        run: .\build\TestIceSDK
+        run: .\build\bin\TestIceSDK
