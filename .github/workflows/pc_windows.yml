@@ -18,7 +18,7 @@ jobs:
           mkdir .\build\
           cd .\build\
 
-          cmake .. -G Ninja -DICESDK_BUILD_TESTS=ON
+          cmake .. -G Ninja -DICESDK_BUILD_TESTS=ON -DDCMAKE_MAKE_PROGRAM=./tools/win/ninja.exe
         shell: pwsh
 
       - name: Build IceSDK
