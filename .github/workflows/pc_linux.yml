@@ -16,7 +16,7 @@ jobs:
       - name: Install Required Packages
         run: |
           sudo apt update
-          sudo apt install -y build-essential git ccache libmesa-dev
+          sudo apt install -y build-essential git ccache libgl1-mesa-dev
 
           git submodule update --init --recursive
 
