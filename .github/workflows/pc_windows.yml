@@ -24,7 +24,7 @@ jobs:
       - name: Build IceSDK
         run: |
           cd .\build\
-          cmake --build ..
+          cmake --build .
       
       - name: Execute Tests
         run: .\build\TestIceSDK
