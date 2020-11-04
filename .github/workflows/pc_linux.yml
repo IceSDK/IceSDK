@@ -31,6 +31,5 @@ jobs:
 
       - name: Execute Tests
         run: |
-          cd out
-          ./TestIceSDK
+          cd build/bin/ && ./TestIceSDK
   
