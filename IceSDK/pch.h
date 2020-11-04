@@ -5,6 +5,7 @@
 /* Headers */
 
 #ifdef ICESDK_WIN32
+    #define NOMINMAX
     #include <Windows.h>
 #endif
 

@@ -1,3 +1,0 @@
-[submodule "third-party/icu"]
-	path = third-party/icu
-	url = https://github.com/viaduck/icu-cmake.git

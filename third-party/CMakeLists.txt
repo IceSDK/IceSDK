@@ -10,8 +10,14 @@ endif()
 #######################################################
 
 # Windowing
-
 if (ICESDK_USE_SDL2)
+    # Fix for 32 bit
+    if (MSVC)
+        if (BITS EQUAL "32")
+            set(OPT_DEF_LIBC ON)
+        endif()
+    endif()
+
     add_subdirectory(sdl2)
 endif()
 
@@ -23,7 +29,6 @@ add_subdirectory(bx)
 # Font rendering
 add_subdirectory(freetype)
 add_subdirectory(harfbuzz)
-add_subdirectory(icu)
 
 #######################################################
 #                       Math                          #

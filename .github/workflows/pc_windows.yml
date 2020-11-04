@@ -15,16 +15,14 @@ jobs:
 
       - name: Generate Build Files
         run: |
-          mkdir .\out\
-          Copy-Item .\.ide\GN\win\pc\args.gn -Destination .\out\args.gn
-          
-          .\tools\win\gn.exe gen out
+          mkdir .\build\
+          cd .\build\
+
+          cmake .. -G Ninja -DICESDK_BUILD_TESTS=ON
         shell: pwsh
 
       - name: Build IceSDK
-        run: .\tools\win\ninja.exe -C out
+        run: .\tools\win\ninja.exe -C build
       
       - name: Execute Tests
-        run: |
-          cd out
-          .\TestIceSDK
+        run: .\build\TestIceSDK

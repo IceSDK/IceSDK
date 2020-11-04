@@ -6,3 +6,7 @@ target_include_directories(bgfx PUBLIC include PRIVATE 3rdparty 3rdparty/cgltf 3
 if (UNIX)
     target_link_libraries(bgfx PUBLIC GL X11)
 endif()
+
+if (WIN32)
+    target_link_libraries(bgfx PUBLIC psapi)
+endif()
