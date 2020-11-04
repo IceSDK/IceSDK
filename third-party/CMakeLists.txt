@@ -41,4 +41,7 @@ add_subdirectory(spdlog)
 #                Tests/Benchmarks                     #
 #######################################################
 #add_subdirectory(gbenchmark)
-#add_subdirectory(googletest)
+
+if(ICESDK_BUILD_TESTS)
+    add_subdirectory(googletest)
+endif()

@@ -15,6 +15,8 @@ option(ICESDK_USE_SDL2     "Use SDL2"               ON)
 option(ICESDK_USE_FMOD     "Use FMOD"               ON)
 option(ICESDK_USE_PROFILER "Use IceSDK's Profiler" OFF)
 
+option(ICESDK_BUILD_TESTS "Build Test cases" OFF)
+
 
 # Asset Compiler Function
 function(target_link_assets)
@@ -50,5 +52,9 @@ endfunction()
 add_subdirectory(third-party)
 add_subdirectory(IceSDK)
 add_subdirectory(examples)
+
+if (ICESDK_BUILD_TESTS)
+    add_subdirectory(Tests)
+endif()
 
 add_subdirectory(tools/sources/AssetCompiler)

@@ -23,7 +23,7 @@ jobs:
       - name: Generate Build Files
         run: |
           mkdir -p ./build
-          cd build && cmake ..
+          cd build && cmake .. -DICESDK_BUILD_TESTS=ON
 
       - name: Build IceSDK
         run: |
