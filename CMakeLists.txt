@@ -21,7 +21,6 @@ option(ICESDK_USE_PROFILER "Use IceSDK's Profiler" OFF)
 
 option(ICESDK_BUILD_TESTS "Build Test cases" OFF)
 
-
 # Asset Compiler Function
 function(target_link_assets)
     set(flags OPTIONAL FLAGS)
@@ -43,11 +42,12 @@ function(target_link_assets)
 
     find_package (Python REQUIRED)
 
+    message(${CMAKE_CURRENT_SOURCE_DIR})
     add_custom_command(
             TARGET ${ASSET_TARGET}
             COMMAND
                 ${Python_EXECUTABLE}
-                ${CMAKE_SOURCE_DIR}/tools/compile_assets.py
+                ${IceSDK_SOURCE_DIR}/tools/compile_assets.py
                 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endfunction()
