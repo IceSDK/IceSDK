@@ -50,7 +50,7 @@ TEST(FileSystem, ReadDirectory)
     auto dir_info = IceSDK::FileSystem::ReadDirectory("./TestDir");
 
     ASSERT_THAT(dir_info,
-                testing::ElementsAre("./TestDir/File", "./TestDir/Dir"));
+                testing::ElementsAre("./TestDir/Dir", "./TestDir/File"));
 }
 
 TEST(FileSystem, ResolveFullPath)
