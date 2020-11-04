@@ -18,6 +18,8 @@ jobs:
           sudo apt update
           sudo apt install -y build-essential git ccache
 
+          git submodule update --init --recursive
+
       - name: Generate Build Files
         run: |
           mkdir -p ./build
