@@ -1,5 +1,7 @@
 #pragma once
 
+#include "platform.h"
+
 /* Headers */
 
 #ifdef ICESDK_WIN32
@@ -23,27 +25,6 @@
     #include <fmod.h>
     #include <fmod.hpp>
     #include <fmod_errors.h>
-
-#endif
-
-#ifdef ICESDK_GLFW
-    #ifdef ICESDK_WIN32
-        #define GLFW_EXPOSE_NATIVE_WIN32
-    #elif ICESDK_LINUX
-        #define GLFW_EXPOSE_NATIVE_X11
-    #endif
-
-    #include <GLFW/glfw3.h>
-
-    #ifdef ICESDK_LINUX
-        #define Glyph _Glyph
-    #endif
-
-    #include <GLFW/glfw3native.h>
-
-    #ifdef ICESDK_LINUX
-        #undef Glyph
-    #endif
 #endif
 
 #ifdef ICESDK_SDL2
@@ -67,8 +48,6 @@
 
 #ifdef ICESDK_SDL2
     #include <imgui_impl_sdl.h>
-#elif defined(ICESDK_GLFW)
-    #include <imgui_impl_glfw.h>
 #endif
 
 #include <spdlog/sinks/android_sink.h>
