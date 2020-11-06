@@ -118,9 +118,9 @@ void SpriteRenderingSystem::Draw(float pDelta)
         auto& shader = spriteEntity.GetComponent<ShaderComponent>();
 
         if (sprite.texture == nullptr || !bgfx::isValid(mesh.index_buffer)
-            || !bgfx::isValid(mesh.vertex_buffer)
-            || !bgfx::isValid(sprite.texture->GetHandle())
-            || !bgfx::isValid(shader.handle))
+                || !bgfx::isValid(mesh.vertex_buffer)
+                || !bgfx::isValid(sprite.texture->GetHandle())
+                || !bgfx::isValid(shader.handle))
             continue;
 
         GetGameBase()->GetSpriteBatch()->SubmitTexturedQuad(
