@@ -18,13 +18,12 @@ jobs:
           mkdir .\build\
           cd .\build\
 
-
-          cmake .. -DICESDK_BUILD_TESTS=ON
+          cmake ..
         shell: pwsh
 
       - name: Build IceSDK
         run: |
-          cmake --build build --config Release --target ALL_BUILD -DICESDK_BUILD_TESTS=ON -- /maxcpucount:14
+          cmake -DICESDK_BUILD_TESTS=ON --build build --config Release --target ALL_BUILD -- /maxcpucount:14
           copy .\build\bin\Release\TestIceSDK.exe .\build\bin\TestIceSDK.exe
         shell: pwsh
 
