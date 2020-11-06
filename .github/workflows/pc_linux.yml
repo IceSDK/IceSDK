@@ -27,7 +27,7 @@ jobs:
 
       - name: Build IceSDK
         run: |
-          cd build && make -j$(nproc)
+          cd build && ninja
 
       - name: Execute Tests
         run: |
