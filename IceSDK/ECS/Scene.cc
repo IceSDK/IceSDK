@@ -7,6 +7,7 @@
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Systems/CameraSystem.h"
 #include "ECS/Systems/TransformSystem.h"
+
 #include "Graphics/Systems/SpriteRenderingSystem.h"
 #include "Graphics/Systems/TextRenderingSystem.h"
 

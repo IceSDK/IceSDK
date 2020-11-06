@@ -30,6 +30,7 @@ protected:
         this->_boxTexture2 =
             this->GetAssetManager()->LoadTexture("/Assets/Ground.png");
 
+        /* clang-format off */ 
         // Simple sprite
         this->_box =
                 activeScene->CreateEntity("Box")
@@ -38,6 +39,7 @@ protected:
                 activeScene->CreateEntity("Long Box")
                             .Position({ 400.f, 100.f, 0.f })
                             .Sprite(this->_boxTexture2);
+        /* clang-format on */
 
         // Make sure Roboto-Regular.ttf is in out/ folder!
         /* then uncomment this:
