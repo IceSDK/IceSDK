@@ -13,18 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Required Packages
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install ninja --accept-license -y
+
       - name: Generate Build Files
         run: |
           mkdir .\build\
           cd .\build\
 
-          cmake ..
+          cmake .. -DICESDK_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release -G Ninja
         shell: pwsh
 
       - name: Build IceSDK
         run: |
-          cmake -DICESDK_BUILD_TESTS=ON --build build --config Release --target ALL_BUILD -- /maxcpucount:14
-          copy .\build\bin\Release\TestIceSDK.exe .\build\bin\TestIceSDK.exe
+          cd .\build\
+
+          ninja
         shell: pwsh
 
       - name: Execute Tests

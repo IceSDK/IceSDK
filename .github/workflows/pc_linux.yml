@@ -16,14 +16,14 @@ jobs:
       - name: Install Required Packages
         run: |
           sudo apt update
-          sudo apt install -y build-essential git ccache libgl1-mesa-dev
+          sudo apt install -y build-essential git ccache libgl1-mesa-dev ninja-build
 
           git submodule update --init --recursive
 
       - name: Generate Build Files
         run: |
           mkdir -p ./build
-          cd build && cmake .. -DICESDK_BUILD_TESTS=ON
+          cd build && cmake .. -DICESDK_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release -G Ninja
 
       - name: Build IceSDK
         run: |
