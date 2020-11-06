@@ -42,8 +42,8 @@ void CameraSystem::Tick(float pDelta)
 
         camera.view_matrix = transform.model_matrix;
         camera.projection_matrix = glm::ortho(
-                                       0.0f, static_cast<float>(window->Width()),
-                                       static_cast<float>(window->Height()), 0.0f, 0.1f, 1000.0f);
+            0.0f, static_cast<float>(window->Width()),
+            static_cast<float>(window->Height()), 0.0f, 0.1f, 1000.0f);
 
         camera.projection_matrix[3].z = 1;  // TODO: Fix
         break;

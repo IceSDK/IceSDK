@@ -50,16 +50,12 @@ Entity Scene::CreateCamera() const
 
 void Scene::Tick(const float pDelta)
 {
-    for (auto system : this->_systems) {
-        system->Tick(pDelta);
-    }
+    for (auto system : this->_systems) { system->Tick(pDelta); }
 }
 
 void Scene::Draw(const float pDelta)
 {
-    for (auto system : this->_systems) {
-        system->Draw(pDelta);
-    }
+    for (auto system : this->_systems) { system->Draw(pDelta); }
 }
 
 Memory::WeakPtr<entt::registry> Scene::GetRegistry()

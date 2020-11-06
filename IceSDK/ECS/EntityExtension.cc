@@ -105,7 +105,7 @@ Entity& Entity::Sprite(Memory::Ptr<Graphics::Texture2D> pTexture,
         texSize = { pTexture->Width(), pTexture->Height() };
 
     this->AddComponent<Graphics::Components::SpriteComponent>(texSize,
-            pTexture);
+                                                              pTexture);
 
     return *this;
 }

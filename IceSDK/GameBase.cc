@@ -29,7 +29,7 @@ GameBase::GameBase()
     Audio::AudioSystem::Init();
 
     this->_window = std::make_shared<Graphics::GameWindow>(
-                        1280, 800, "IceSDK: Game Window");
+        1280, 800, "IceSDK: Game Window");
     this->_audio_system = std::make_shared<Audio::AudioSystem>();
     this->_sprite_batch = std::make_shared<Graphics::SpriteBatch>();
     this->_asset_manager = std::make_shared<Assets::AssetManager>();
@@ -195,7 +195,7 @@ void GameBase::InternalDraw(const float pDelta)
 #ifdef ICESDK_SDL2
     ImGui_ImplSDL2_NewFrame(game->_window->_window);
 #else
-#warning "Undefined Graphics API"
+    #warning "Undefined Graphics API"
 #endif
     ImGui::NewFrame();
     game->Draw(pDelta);
