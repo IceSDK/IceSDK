@@ -1,8 +1,12 @@
 add_library(bx STATIC src/amalgamated.cpp)
 target_include_directories(bx PUBLIC include 3rdparty)
 
-if(WIN32)
+if(MSVC)
     target_include_directories(bx PUBLIC include/compat/msvc)
+endif()
+
+if(MSYS OR MINGW)
+    target_include_directories(bx PUBLIC include/compat/mingw)
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
