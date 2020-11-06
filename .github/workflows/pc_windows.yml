@@ -27,10 +27,7 @@ jobs:
         shell: pwsh
 
       - name: Build IceSDK
-        run: |
-          cd .\build\
-
-          ninja
+        run: ninja -C build
         shell: pwsh
 
       - name: Execute Tests
