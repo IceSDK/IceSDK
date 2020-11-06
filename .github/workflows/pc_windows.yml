@@ -23,7 +23,10 @@ jobs:
         shell: pwsh
 
       - name: Build IceSDK
-        run: cmake --build build --config Release --target ALL_BUILD -- /maxcpucount:14
+        run: |
+          cmake --build build --config Release --target ALL_BUILD -DICESDK_BUILD_TESTS=ON -- /maxcpucount:14
+          copy .\build\bin\Release\TestIceSDK.exe .\build\bin\TestIceSDK.exe
+        shell: pwsh
 
       - name: Execute Tests
         run: .\build\bin\TestIceSDK
