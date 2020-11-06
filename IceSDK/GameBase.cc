@@ -6,6 +6,7 @@
 #include "Utils/Logger.h"
 
 #include "Graphics/ImGui/bgfx_imgui.h"
+#include "Graphics/Systems/SpriteRenderingSystem.h"
 
 using namespace IceSDK;
 
@@ -60,6 +61,7 @@ void GameBase::Run()
 
     this->Init();
 
+    Systems::SpriteRenderingSystem::Init();
     this->_input_pipeline->Init();
     this->_window->SetDrawCallback(GameBase::InternalDraw);
     this->_window->SetDrawInitCallback(GameBase::InternalDrawInit);

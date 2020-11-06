@@ -7,6 +7,8 @@
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Systems/CameraSystem.h"
 #include "ECS/Systems/TransformSystem.h"
+#include "Graphics/Systems/SpriteRenderingSystem.h"
+#include "Graphics/Systems/TextRenderingSystem.h"
 
 using namespace IceSDK;
 
@@ -17,8 +19,10 @@ Scene::Scene()
     CreateCamera();
 
     this->RegisterSystem<Systems::TransformSystem>();
-
     this->RegisterSystem<Systems::CameraSystem>();
+
+    this->RegisterSystem<Systems::SpriteRenderingSystem>();
+    this->RegisterSystem<Systems::TextRenderingSystem>();
 }
 
 Entity Scene::CreateEntity(const std::string& pName) const
