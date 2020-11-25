@@ -15,7 +15,22 @@ namespace IceSDK::Systems
         {
         }
 
+        /*****************************************************
+         * Tick
+         *
+         * Tick the current system
+         *
+         * @param fDelta Delta time between the last tick
+         *****************************************************/
         void Tick(float fDelta) override;
+
+        /*****************************************************
+         * Draw
+         *
+         * Draws the current system
+         *
+         * @param fDelta Delta time between the last draw
+         *****************************************************/
         void Draw(float fDelta) override;
     };
 }  // namespace IceSDK::Systems

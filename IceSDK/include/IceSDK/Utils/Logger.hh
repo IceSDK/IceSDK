@@ -21,6 +21,11 @@ namespace IceSDK::Utils
         inline static bool g_LoggerInitialized = false;
 
     public:
+        /*****************************************************
+         * Init
+         *
+         * Initializes the logger for it's host platform.
+         *****************************************************/
         static void Init()
         {
             if (g_LoggerInitialized) return;
@@ -57,11 +62,26 @@ namespace IceSDK::Utils
             g_LoggerInitialized = true;
         }
 
-        static std::shared_ptr<spdlog::logger>& GetCoreLogger()
+        /*****************************************************
+         * GetEngineLogger
+         *
+         * Gets the Game Engine's logger
+         *
+         * @return Engine Logger
+         *****************************************************/
+        static std::shared_ptr<spdlog::logger>& GetEngineLogger()
         {
             return s_pCoreLogger;
         }
-        static std::shared_ptr<spdlog::logger>& GetClientLogger()
+
+        /*****************************************************
+         * GetGameLogger
+         *
+         * Gets the Game logger
+         *
+         * @return Game Logger
+         *****************************************************/
+        static std::shared_ptr<spdlog::logger>& GetGameLogger()
         {
             return s_pClientLogger;
         }
@@ -71,15 +91,15 @@ namespace IceSDK::Utils
 
 // Core log macros
 #define ICESDK_CORE_TRACE(...)                                                 \
-    ::IceSDK::Utils::Log::GetCoreLogger()->trace(__VA_ARGS__)
+    ::IceSDK::Utils::Log::GetEngineLogger()->trace(__VA_ARGS__)
 #define ICESDK_CORE_INFO(...)                                                  \
-    ::IceSDK::Utils::Log::GetCoreLogger()->info(__VA_ARGS__)
+    ::IceSDK::Utils::Log::GetEngineLogger()->info(__VA_ARGS__)
 #define ICESDK_CORE_WARN(...)                                                  \
-    ::IceSDK::Utils::Log::GetCoreLogger()->warn(__VA_ARGS__)
+    ::IceSDK::Utils::Log::GetEngineLogger()->warn(__VA_ARGS__)
 #define ICESDK_CORE_ERROR(...)                                                 \
-    ::IceSDK::Utils::Log::GetCoreLogger()->error(__VA_ARGS__)
+    ::IceSDK::Utils::Log::GetEngineLogger()->error(__VA_ARGS__)
 #define ICESDK_CORE_CRITICAL(...)                                              \
-    ::IceSDK::Utils::Log::GetCoreLogger()->critical(__VA_ARGS__)
+    ::IceSDK::Utils::Log::GetEngineLogger()->critical(__VA_ARGS__)
 
 // Client log macros
 #define ICESDK_TRACE(...)                                                      \

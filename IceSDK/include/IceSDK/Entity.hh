@@ -8,7 +8,6 @@
 
 #include <string_view>
 
-
 #define ENTITY_EXCEPTION(_FMT, ...)                                            \
     ::IceSDK::EntityException(fmt::format(_FMT, __VA_ARGS__), __FILE__,        \
                               __LINE__)
@@ -142,7 +141,7 @@ namespace IceSDK
          *
          * @param v3Position Target Position
          *
-         * @see IceSDK::ECS::Components::TransformComponent
+         * @see IceSDK::Components::TransformComponent
          *
          * @return self
          *****************************************************/
@@ -155,7 +154,7 @@ namespace IceSDK
          *
          * @param v3Scale Target Scale
          *
-         * @see IceSDK::ECS::Components::TransformComponent
+         * @see IceSDK::Components::TransformComponent
          *
          * @return self
          *****************************************************/
@@ -168,7 +167,7 @@ namespace IceSDK
          *
          * @param fDegrees Target Rotation in degrees
          *
-         * @see IceSDK::ECS::Components::TransformComponent
+         * @see IceSDK::Components::TransformComponent
          *
          * @return self
          *****************************************************/
@@ -179,7 +178,7 @@ namespace IceSDK
          *
          * Attaches a default TransformComponent if doesn't exist
          *
-         * @see IceSDK::ECS::Components::TransformComponent
+         * @see IceSDK::Components::TransformComponent
          *
          * @return self
          *****************************************************/
