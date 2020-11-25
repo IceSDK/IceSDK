@@ -217,7 +217,8 @@ namespace IceSDK::Utils::FileSystem
                                    &FindFileData))
             != INVALID_HANDLE_VALUE)
         {
-            do {
+            do
+            {
                 if (std::string_view(FindFileData.cFileName) == "."
                     || std::string_view(FindFileData.cFileName) == "..")
                     continue;
@@ -255,9 +256,7 @@ namespace IceSDK::Utils::FileSystem
                 if (FileSystem::IsDirectory(_dir))
                 {
                     for (const auto& __dir : ReadDirectory(_dir, true))
-                    {
-                        directories.push_back(__dir);
-                    }
+                    { directories.push_back(__dir); }
                 }
             }
         }

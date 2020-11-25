@@ -5,7 +5,6 @@
 #include "Assets/AudioAsset.h"
 #include "Assets/TextAsset.h"
 #include "Assets/Texture2DAsset.h"
-
 #include "Utils/FileSystem.h"
 #include "Utils/Instrumentor.h"
 #include "Utils/Logger.h"

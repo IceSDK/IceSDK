@@ -2,9 +2,8 @@
 
 #include "SpriteBatch.h"
 
-#include "Utils/Logger.h"
-
 #include "GameBase.h"
+#include "Utils/Logger.h"
 
 using namespace IceSDK::Graphics;
 

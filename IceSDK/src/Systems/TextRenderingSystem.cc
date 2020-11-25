@@ -6,12 +6,11 @@
 #include "ECS/Components/TextComponent.hh"
 #include "ECS/Entity.hh"
 
+#include "GameBase.hh"
+#include "Graphics/Fonts/FontManager.h"
 #include "Utils/Logger.hh"
 #include "Utils/Math.hh"
 #include "Utils/String.hh"
-
-#include "GameBase.hh"
-#include "Graphics/Fonts/FontManager.h"
 
 using namespace IceSDK;
 using namespace IceSDK::ECS::Systems;
