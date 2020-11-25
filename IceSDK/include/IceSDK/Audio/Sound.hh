@@ -10,7 +10,7 @@ namespace IceSDK
 {
     namespace Audio
     {
-        class AudioSystem;
+        class AudioEngine;
 
         class Sound
         {
@@ -37,7 +37,7 @@ namespace IceSDK
             FMOD::Channel* m_pSoundChannel = nullptr;
 #endif
 
-            friend AudioSystem;
+            friend AudioEngine;
         };
     }  // namespace Audio
 }  // namespace IceSDK
