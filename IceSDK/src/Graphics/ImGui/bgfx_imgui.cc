@@ -7,13 +7,13 @@
 
 #include "Graphics/ImGui/bgfx_imgui.h"
 
-#include "Graphics/ImGui/bgfx_utils.h"
-
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 #include <bx/allocator.h>
 #include <bx/math.h>
 #include <bx/timer.h>
+
+#include "Graphics/ImGui/bgfx_utils.h"
 
 #include <imgui.h>
 

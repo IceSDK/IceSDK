@@ -2,9 +2,8 @@
 
 #include "Input/InputPipeline.hh"
 
-#include "Utils/Logger.hh"
-
 #include "GameBase.hh"
+#include "Utils/Logger.hh"
 
 using namespace IceSDK;
 using namespace IceSDK::Input;
@@ -21,54 +20,34 @@ void InputPipeline::PumpSDL2Event(SDL_Event& SDLEvent)
         uint8_t keyboardMods = KeyboardMods::None;
 
         if ((keyEvent.mod & KMOD_LSHIFT) > 0)
-        {
-            keyboardMods |= KeyboardMods::SHIFT;
-        }
+        { keyboardMods |= KeyboardMods::SHIFT; }
 
         if ((keyEvent.mod & KMOD_RSHIFT) > 0)
-        {
-            keyboardMods |= KeyboardMods::SHIFT;
-        }
+        { keyboardMods |= KeyboardMods::SHIFT; }
 
         if ((keyEvent.mod & KMOD_LCTRL) > 0)
-        {
-            keyboardMods |= KeyboardMods::CONTROL;
-        }
+        { keyboardMods |= KeyboardMods::CONTROL; }
 
         if ((keyEvent.mod & KMOD_RCTRL) > 0)
-        {
-            keyboardMods |= KeyboardMods::CONTROL;
-        }
+        { keyboardMods |= KeyboardMods::CONTROL; }
 
         if ((keyEvent.mod & KMOD_RALT) > 0)
-        {
-            keyboardMods |= KeyboardMods::ALT;
-        }
+        { keyboardMods |= KeyboardMods::ALT; }
 
         if ((keyEvent.mod & KMOD_LALT) > 0)
-        {
-            keyboardMods |= KeyboardMods::ALT;
-        }
+        { keyboardMods |= KeyboardMods::ALT; }
 
         if ((keyEvent.mod & KMOD_LGUI) > 0)
-        {
-            keyboardMods |= KeyboardMods::SUPER;
-        }
+        { keyboardMods |= KeyboardMods::SUPER; }
 
         if ((keyEvent.mod & KMOD_RGUI) > 0)
-        {
-            keyboardMods |= KeyboardMods::SUPER;
-        }
+        { keyboardMods |= KeyboardMods::SUPER; }
 
         if ((keyEvent.mod & KMOD_NUM) > 0)
-        {
-            keyboardMods |= KeyboardMods::NUM_LOCK;
-        }
+        { keyboardMods |= KeyboardMods::NUM_LOCK; }
 
         if ((keyEvent.mod & KMOD_CAPS) > 0)
-        {
-            keyboardMods |= KeyboardMods::CAPS_LOCK;
-        }
+        { keyboardMods |= KeyboardMods::CAPS_LOCK; }
 
         this->m_eKeyboardMods = (KeyboardMods) keyboardMods;
     }

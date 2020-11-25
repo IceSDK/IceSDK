@@ -2,10 +2,9 @@
 
 #include "GameBase.hh"
 
-#include "Utils/Logger.hh"
-
 #include "Graphics/ImGui/bgfx_imgui.h"
 #include "Graphics/Systems/SpriteRenderingSystem.hh"
+#include "Utils/Logger.hh"
 
 using namespace IceSDK;
 

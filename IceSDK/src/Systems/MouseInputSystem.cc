@@ -2,9 +2,9 @@
 
 #include "Input/Components/MouseInputComponent.h"
 #include "Input/MouseTable.h"
-#include "Utils/Instrumentor.h"
 
 #include "GameBase.h"
+#include "Utils/Instrumentor.h"
 
 using namespace IceSDK;
 using namespace IceSDK::Input;
