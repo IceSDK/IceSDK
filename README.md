@@ -32,16 +32,16 @@ iOS/MacOS aren't currently supported since i lack those devices.
 
 | ![Windows](./.assets/windows_64x64.png) | ![Linux](./.assets/linux_64x64.png) | ![osX](./.assets/osx_64x64.png) | ![android](./.assets/android_64x64.png) | ![ios](./.assets/ios_64x64.png) | ![web](./.assets/wasm_64x64.png) |
 | --------------------------------------- | ----------------------------------- | ------------------------------- | --------------------------------------- | ------------------------------- | -------------------------------- |
-| :heavy_check_mark:                      | :heavy_check_mark:                  | :x:                             | :heavy_check_mark:                      | :x:                             | :heavy_check_mark:               |
+| :heavy_check_mark:                      | :heavy_check_mark:                  | :x:                             | :x:                                     | :x:                             | :x:                              |
 
 ## Compile Status
 
-| Platform   | Windows                                                                                             | Linux                                                                                               | MacOS |
-| ---------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----- |
-| PC         | ![GitHub Workflow Status](https://github.com/IceSDK/IceSDK/workflows/PC%20Windows/badge.svg)       | ![GitHub Workflow Status](https://github.com/IceSDK/IceSDK/workflows/PC%20Linux/badge.svg)         | :x:   |
-| Android    | :x:   | :x:    | :x:   |
-| iOS        | :x:   | :x:    | :x:   |
-| Emscripten | :x:   | :x:    | :x:   |
+| Platform   | Windows                                                                                      | Linux                                                                                      | MacOS |
+| ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----- |
+| PC         | ![GitHub Workflow Status](https://github.com/IceSDK/IceSDK/workflows/PC%20Windows/badge.svg)   | ![GitHub Workflow Status](https://github.com/IceSDK/IceSDK/workflows/PC%20Linux/badge.svg)   | :x:   |
+| Android    | :x:                                                                                          | :x:                                                                                        | :x:   |
+| iOS        | :x:                                                                                          | :x:                                                                                        | :x:   |
+| Emscripten | :x:                                                                                          | :x:                                                                                        | :x:   |
 
 ## License
 

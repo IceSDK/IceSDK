@@ -1,70 +1,60 @@
 add_library(IceSDK STATIC
-        GameBase.cc
+        src/GameBase.cc
+        src/Entity.cc
+        src/Scene.cc
+
+        #######################################################
+        #                      Systems                        #
+        #######################################################
+
+        src/Systems/CameraSystem.cc
+        src/Systems/TransformSystem.cc
+        src/Systems/SpriteRenderingSystem.cc
+        src/Systems/TextRenderingSystem.cc
+        src/Systems/MouseInputSystem.cc
+        src/Systems/KeyboardInputSystem.cc
 
         #######################################################
         #                      Assets                         #
         #######################################################
-        Assets/AssetFile.cc
-        Assets/AssetManager.cc
-        Assets/AudioAsset.cc
-        Assets/ShaderAsset.cc
-        Assets/TextAsset.cc
-        Assets/Texture2DAsset.cc
+        src/Assets/AssetFile.cc
+        src/Assets/AssetManager.cc
+        src/Assets/AudioAsset.cc
+        src/Assets/ShaderAsset.cc
+        src/Assets/TextAsset.cc
+        src/Assets/Texture2DAsset.cc
 
         #######################################################
         #                       Audio                         #
         #######################################################
-        Audio/Sound.cc
-        Audio/AudioSystem.cc
-
-        #######################################################
-        #                        ECS                          #
-        #######################################################
-        ECS/Entity.cc
-        ECS/EntityExtension.cc
-        ECS/Scene.cc
-        ECS/System.cc
-
-        ECS/Systems/CameraSystem.cc
-        ECS/Systems/TransformSystem.cc
+        src/Audio/Sound.cc
+        src/Audio/AudioEngine.cc
 
         #######################################################
         #                     Graphics                        #
         #######################################################
-        Graphics/Window.cc
-        Graphics/Texture2D.cc
+        src/Graphics/Window.cc
+        src/Graphics/Texture2D.cc
+        src/Graphics/SpriteBatch.cc
+        src/Graphics/FontFace.cc
+        src/Graphics/FontManager.cc
 
-        Graphics/Fonts/FontFace.cc
-        Graphics/Fonts/FontManager.cc
+        src/Graphics/Shaders/ShaderManager.cc
 
-        Graphics/Shaders/ShaderManager.cc
 
-        Graphics/SpriteBatch/SpriteBatch.cc
-
-        Graphics/Systems/SpriteRenderingSystem.cc
-        Graphics/Systems/TextRenderingSystem.cc
-
-        Graphics/ImGui/bgfx_imgui.cc
-        #       ImGui/Widgets/AssetBrowser.cc
-        Graphics/ImGui/Widgets/SceneGraph.cc
+        src/Graphics/ImGui/bgfx_imgui.cc
+        src/Graphics/ImGui/Widgets/AssetBrowser.cc
+        src/Graphics/ImGui/Widgets/SceneGraph.cc
 
         #######################################################
         #                       Input                         #
         #######################################################
-        Input/InputPipeline.cc
-        Input/Systems/MouseInputSystem.cc
-        Input/Systems/KeyboardInputSystem.cc
-
-        #######################################################
-        #                       Utils                         #
-        #######################################################
-        Utils/FileSystem.cc
-        Utils/Logger.cc
+        src/Input/InputPipeline.cc
 )
 
 target_link_libraries(IceSDK PUBLIC bx bimg bgfx entt glm spdlog freetype imgui harfbuzz)
-target_precompile_headers(IceSDK PUBLIC pch.h)
-target_include_directories(IceSDK PUBLIC .)
+target_precompile_headers(IceSDK PUBLIC src/pch.hh)
+target_include_directories(IceSDK PUBLIC include PRIVATE src)
 
 if (ICESDK_USE_SDL2)
     target_link_libraries(IceSDK PUBLIC SDL2-static)

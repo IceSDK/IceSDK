@@ -8,3 +8,10 @@ TEST(String, Trim)
 
     ASSERT_EQ(IceSDK::String::Trim(input, " "), "YO!");
 }
+
+Test(String, CalculateHash)
+{
+    std::string input = "Hello World!";
+
+    ASSERT_EQ(IceSDK::String::CalculateHash(input, " "), "YO!");
+}
